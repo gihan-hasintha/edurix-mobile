@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registry - Edurix</title>
+    <link rel="stylesheet" href="./assets/css/sub_nav_style.css">
+    <link rel="stylesheet" href="./assets/css/student-registry.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+    <script type="module" src="./assets/js/env.js"></script>
+</head>
+
+<body onload="pageloadimasoft()">
+    <div id="navbar">
+        <div class="navbar-for-application">
+            <div class="navbar-for-application-content">
+                <div class="navbar-for-application-content-left">
+                    <div class="navbar-for-application-content-left-back" onclick="window.history.back()"
+                        style="cursor:pointer; margin-right:15px; display:flex; align-items:center; color:#fff;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                    </div>
+                    <div class="navbar-for-application-content-left-logo">
+                        <img src="./assets/img/logo.png" alt="">
+                    </div><span class="nav-separator"> - </span>
+                    <div id="navbar-for-application-content-left-school-name">Loading...</div><span
+                        class="nav-separator"> - </span>
+                    <div id="navbar-for-application-content-left-school-name-page-name">Student Registry</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navbar-space"></div>
+
+    <div id="loading-window" style="display: block;">
+        <div class="loading-window-content">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 384" class="loader">
+                <circle r="176" cy="192" cx="192" stroke-width="32" fill="transparent" pathLength="360" class="active">
+                </circle>
+                <circle r="176" cy="192" cx="192" stroke-width="32" fill="transparent" pathLength="360" class="track">
+                </circle>
+            </svg>
+        </div>
+    </div>
+
+    <div id="otp-window">
+        <div class="otp-window-content">
+            <div class="otp-window-content-form"></div>
+        </div>
+    </div>
+
+    <!-- Status Modal -->
+    <div id="statusModal" class="status-modal">
+        <div id="statusContent" class="status-content">
+            <div class="status-icon-container">
+                <div id="statusIcon" class="status-icon"></div>
+            </div>
+            <div id="statusTitle" class="status-title"></div>
+            <div id="statusMessage" class="status-message"></div>
+            <button id="statusBtn" class="status-btn" onclick="closeStatusModal()">Close</button>
+        </div>
+    </div>
+
+    <div id="nfc-added-status-window" style="display: none;">
+        <div class="nfc-added-status-window-content">
+            <div class="nfc-added-status-window-content-text">Card Linked Successfully</div>
+            <div class="nfc-added-status-window-content-img"><img src="./assets/img/checkas.png" alt=""></div>
+        </div>
+    </div>
+
+    <div id="nfc-scanning-window" style="display: none;">
+        <div class="nfc-scanning-overlay">
+            <div class="nfc-scanning-modal">
+                <div class="nfc-close-btn" onclick="closeNfcScanner()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 6L6 18M6 6L18 18" stroke="#8A8D93" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <h2 class="scan-text">SCAN YOUR CARD</h2>
+                <p class="scan-subtext">Hold your IMATAP smart card near the NFC area<br>on this device.</p>
+
+                <div class="scan-animation-wrapper">
+                    <div class="ripple-container">
+                        <div class="ripple"></div>
+                        <div class="ripple"></div>
+                        <div class="ripple"></div>
+                        <div class="card-icon">
+                            <img src="./assets/img/smart_card.png" alt="Scan Card">
+                        </div>
+                    </div>
+                    <div class="nfc-wave-icon">
+                        <svg width="40" height="30" viewBox="0 0 40 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15 20C18 17.5 22 17.5 25 20" stroke="#7b5be4" stroke-width="2.5"
+                                stroke-linecap="round" />
+                            <path d="M10 14C16 9 24 9 30 14" stroke="#7b5be4" stroke-width="2.5"
+                                stroke-linecap="round" />
+                            <path d="M5 8C13.5 1 26.5 1 35 8" stroke="#7b5be4" stroke-width="2.5"
+                                stroke-linecap="round" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="nfc-action-buttons">
+                    <button class="waiting-nfc-btn" type="button">
+                        <div class="spinner-border"></div>
+                        Waiting for NFC...
+                    </button>
+                    <button class="cancel-scan-btn" type="button" onclick="closeNfcScanner()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-window">
+        <div class="container" style="width: 90%;margin: 0 auto;">
+
+            <div class="form-card">
+                <form id="studentForm">
+
+                    <div class="student-main-info">
+                        <div class="student-main-info-left-top-photo">
+                            <div class="student-main-info-left">
+                                <div class="photo-group" title="Click to upload photo">
+                                    <label style="display: block; ">Student
+                                        Photo</label>
+                                    <div class="photo-preview-container">
+                                        <img id="photoPreview"
+                                            src="./assets/img/depositphotos_679927214-stock-illustration-default-avatar-profile-placeholder-abstract.jpg"
+                                            class="hidden" onclick="document.getElementById('photoInput').click()">
+                                        <div id="photoPlaceholder" class="placeholder-icon"></div>
+                                    </div>
+                                    <input type="file" id="photoInput" accept="image/*" style="display: none;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="student-main-info-right">
+                            <div class="form-group">
+                                <label for="student_name">Student Name</label>
+                                <input type="text" id="student_name" placeholder="John Doe" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phone_number">Student Phone</label>
+                                <input type="number" id="phone_number" placeholder="07x-xxxxxxx" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="birthday">Birthday</label>
+                                <input type="date" id="birthday" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <input type="text" id="address" placeholder="123 Education Ave" required>
+                    </div>
+
+                    <div class="form-group" style="position: absolute; top: -3050px; right: 0;opacity: 1;">
+                        <label for="nfc-number">NFC Number</label>
+                        <input type="text" id="nfc-number" placeholder="12345678901234567890">
+                    </div>
+
+                    <div class="form-group-spilt" style="display: flex;gap: 10px;width: 100%;">
+                        <div class="form-group" style="width: 50%;">
+                            <label for="parent_name">Parent's Name</label>
+                            <input type="text" id="parent_name" placeholder="Jane Doe" required>
+                        </div>
+                        <div class="form-group" style="width: 50%;">
+                            <label for="parent_phone_number">Parent's Phone</label>
+                            <input type="text" id="parent_phone_number" placeholder="07x-xxxxxxx" required>
+                        </div>
+                    </div>
+                    <div class="form-group" id="classSelectGroup" style="display: none;">
+                        <label for="assign_class">Assign to Class</label>
+                        <select id="assign_class" required>
+                            <option value="" disabled selected>Select a Class</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                        <input type="checkbox" id="free_card" style="width: 18px; height: 18px; cursor: pointer;">
+                        <label for="free_card" style="margin: 0; padding: 0; cursor: pointer; user-select: none;">Issue
+                            Free Card</label>
+                    </div>
+                    <div class="student-form-bts">
+                        <button class="student-form-bts-scan-button" id="nfcScanBtn" type="button"
+                            onclick="scancardfunbt()">
+                            <div class="nfcScanBtn-txt">Scan Card</div>
+                            <div class="nfcScanBtn-icon">
+                                <img src="./assets/img/contactless.png" alt="">
+                            </div>
+                        </button>
+                        <button type="submit" class="submit-btn" id="submitBtn">
+                            <span id="btnText">Register Student</span>
+                            <div id="btnLoader" class="loader hidden"></div>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="cropModal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-top: 0;">Crop Student Photo (1:1)</h3>
+            <div class="cropper-container">
+                <img id="cropperImage" style="max-width: 100%;">
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn btn-cancel" onclick="closeCropModal()">Cancel</button>
+                <button class="modal-btn btn-crop" id="saveCropBtn">Apply Crop</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+    <script type="module" src="./assets/js/student_register.js"></script>
+    <script type="module" src="./assets/js/application_config.js"></script>
+</body>
+
+</html>

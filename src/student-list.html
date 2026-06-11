@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student List - Edurix</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/sub_nav_style.css">
+    <link rel="stylesheet" href="./assets/css/student-list.css">
+    <script type="module" src="./assets/js/env.js"></script>
+</head>
+
+<body>
+
+    <style>
+        #main-application {
+            width: 100%;
+            height: calc(100% - 155px);
+            position: fixed;
+            left: 0;
+            overflow: auto;
+            top: 155px;
+        }
+    </style>
+
+    <div id="navbar">
+        <div class="navbar-for-application">
+            <div class="navbar-for-application-content">
+                <div class="navbar-for-application-content-left">
+                    <div class="navbar-for-application-content-left-back" onclick="window.history.back()"
+                        style="cursor:pointer; margin-right:15px; display:flex; align-items:center; color:#fff;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                    </div>
+                    <div class="navbar-for-application-content-left-logo">
+                        <img src="./assets/img/logo.png" alt="">
+                    </div><span class="nav-separator"> - </span>
+                    <div id="navbar-for-application-content-left-school-name">ImaPOS DriveMATE</div><span
+                        class="nav-separator"> - </span>
+                    <div id="navbar-for-application-content-left-school-name-page-name">Student List</div>
+                </div>
+                <div class="navbar-for-application-content-righ">
+                    <div class="navbar-for-application-content-righ-icons">
+                        <a title="Settings" onclick="history.back()">
+                            <div class="navbar-for-application-content-righ-icons-for-link">
+                                <img src="./assets/img/back.png" alt="">
+                            </div>
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="navbar-space"></div>
+    </div>
+
+    <div class="subnav-for-application"
+        style="position: fixed; height: auto; padding: 10px 0 1px 0; background: #fff; border-bottom: none;">
+        <div class="subnav-for-application-content"
+            style="display: flex; flex-direction: column; gap: 12px; width: 94%; margin: 0 auto; height: auto;">
+            <!-- First row: 3 dropdowns -->
+            <div style="display: flex; gap: 10px; width: 100%;">
+                <div style="position: relative; flex: 1;">
+                    <select id="classFilter"
+                        style="width: 100%; padding: 0 28px 0 10px; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 13px; color: #475569; outline: none; background: white; cursor: pointer; text-overflow: ellipsis; height: 40px; appearance: none; box-sizing: border-box;">
+                        <option value="All">All Classes</option>
+                    </select>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"
+                        style="position: absolute; right: 10px; top: 14px; pointer-events: none;">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+                <div style="position: relative; flex: 1;">
+                    <select id="statusFilter"
+                        style="width: 100%; padding: 0 28px 0 10px; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 13px; color: #475569; outline: none; background: white; cursor: pointer; height: 40px; appearance: none; box-sizing: border-box;">
+                        <option value="Active">Active Students</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"
+                        style="position: absolute; right: 10px; top: 14px; pointer-events: none;">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+                <div style="position: relative; flex: 1;">
+                    <select id="sortFilter"
+                        style="width: 100%; padding: 0 28px 0 10px; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 13px; color: #475569; outline: none; background: white; cursor: pointer; height: 40px; appearance: none; box-sizing: border-box;">
+                        <option value="Default">Default</option>
+                        <option value="Name">Sort by Name</option>
+                        <option value="Recent">Recently Added</option>
+                    </select>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"
+                        style="position: absolute; right: 10px; top: 14px; pointer-events: none;">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+            </div>
+            <!-- Second row: Search, Sync, Total -->
+            <div style="display: flex; gap: 10px; width: 100%; align-items: stretch;">
+                <div class="search-container" style="position: relative; flex: 1; display: flex; align-items: center;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"
+                        style="position: absolute; left: 12px; pointer-events: none;">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="Search students"
+                        style="padding: 0 30px 0 38px; font-size: 14px; border-radius: 6px; border: 1px solid #e2e8f0; width: 100%; height: 44px; box-sizing: border-box; outline: none; color: #1e293b;">
+                    <button id="clearSearchBtn" onclick="clearSearch()"
+                        style="position: absolute; right: 8px; background: none; border: none; cursor: pointer; display: none; padding: 4px; color: #94a3b8; align-items: center; justify-content: center;"
+                        title="Clear search">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <button onclick="scancardfunbt()" title="Search by NFC"
+                    style="background: #0037ff; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; transition: background 0.2s; flex-shrink: 0;">
+                    <img src="./assets/img/contactless.png" alt="">
+                </button>
+                <div class="stats"
+                    style="padding: 0 12px; border-radius: 6px; border: 1px solid #e2e8f0; background-color: #f8fafc; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; height: 44px; min-width: 90px; box-sizing: border-box;">
+                    <span style="font-size: 11px; color: #64748b; margin-bottom: 2px;">Total Students</span>
+                    <span id="studentCount" style="font-weight: 700; color: #0037ff; font-size: 14px;">0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-application" style="margin-top: 0;">
+        <div class="student-list-container" style="position: static; height: auto; padding-bottom: 20px;">
+            <div id="studentCardsContainer"
+                style="width: 94%; margin: 1px auto; display: flex; flex-direction: column; gap: 12px;">
+                <!-- Cards will be rendered here via JS -->
+            </div>
+
+            <div id="loader" class="loading-spinner">
+                <p>Loading students...</p>
+            </div>
+            <div id="errorMessage" class="error-message hidden" style="width: 94%; margin: 0 auto;">
+                Failed to load students. Please check your connection.
+            </div>
+
+            <!-- Hidden table for compat -->
+            <table id="studentTable" style="display: none;">
+                <tbody id="studentTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- View Classes Modal -->
+    <div id="viewClassesModal" class="modal"
+        style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); align-items: center; justify-content: center;">
+        <div class="modal-content custom-modal"
+            style="background-color: #fefefe; padding: 0; border-radius: 8px; width: 90%; max-width: 500px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); max-height: 90vh; display: flex; flex-direction: column;">
+            <div class="modal-header custom-modal-header"
+                style="display: flex; justify-content: space-between; align-items: flex-start; padding: 20px; border-bottom: 1px solid #eee;">
+                <div class="header-left">
+                    <div class="header-text">
+                        <h2 id="viewStudentName" style="margin: 0 0 5px 0; font-size: 18px; color: #333;">Enrolled
+                            Classes</h2>
+                        <p style="margin: 0; color: #666; font-size: 13px;">List of all classes this student is
+                            currently enrolled in.</p>
+                    </div>
+                </div>
+                <button type="button" class="close-btn-custom" onclick="closeViewModal()"
+                    style="background: #f3f4f6; border: none; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #666;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div id="enrolledClassesList" class="enrolled-list-mini"
+                style="max-height: 220px; overflow-y: auto; padding: 12px 15px;">
+                <!-- List will be populated here -->
+                <div id="viewLoader" style="display: none; text-align: center; padding: 20px; color: #666;">Loading...
+                </div>
+            </div>
+            <div class="modal-footer custom-footer"
+                style="padding: 15px 20px; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                <div id="enrolledClassesCount" style="font-size: 14px; font-weight: 500; color: #555;">
+                    Total Enrolled: 0
+                </div>
+                <button type="button" class="btn-cancel"
+                    style="background-color: #f3f4f6; color: #4b5563; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 500; cursor: pointer;"
+                    onclick="closeViewModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NFC Search Modal -->
+    <style>
+        #nfc-scanning-window {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2000;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .nfc-scanning-overlay {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .nfc-scanning-modal {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            position: relative;
+            width: 90%;
+            max-width: 420px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .nfc-close-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .nfc-close-btn:hover {
+            background-color: #f0f0f0;
+        }
+
+        .scan-text {
+            font-size: 20px;
+            margin: 10px 0 12px 0;
+            color: #1a1b35;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .scan-subtext {
+            font-size: 14px;
+            color: #6e6f76;
+            margin: 0 0 40px 0;
+            line-height: 1.5;
+        }
+
+        .scan-animation-wrapper {
+            position: relative;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .ripple-container {
+            position: relative;
+            width: 220px;
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .card-icon {
+            position: relative;
+            z-index: 10;
+            width: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-icon img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            display: block;
+        }
+
+        .ripple {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 1.5px solid #7b5be4;
+            animation: ripple-anim 2.5s cubic-bezier(0.1, 0.2, 0.3, 1) infinite;
+            opacity: 0;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .ripple:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .ripple:nth-child(2) {
+            animation-delay: 0.8s;
+        }
+
+        .ripple:nth-child(3) {
+            animation-delay: 1.6s;
+        }
+
+        @keyframes ripple-anim {
+            0% {
+                width: 100px;
+                height: 100px;
+                opacity: 0.6;
+            }
+
+            100% {
+                width: 380px;
+                height: 380px;
+                opacity: 0;
+            }
+        }
+
+        .nfc-wave-icon {
+            margin-top: 20px;
+        }
+
+        .nfc-action-buttons {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .waiting-nfc-btn {
+            width: 100%;
+            background-color: #f3f0ff;
+            color: #7b5be4;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: default;
+        }
+
+        .spinner-border {
+            width: 18px;
+            height: 18px;
+            border: 2.5px solid #7b5be44d;
+            border-top: 2.5px solid #7b5be4;
+            border-radius: 50%;
+            animation: spin-anim 1s linear infinite;
+        }
+
+        @keyframes spin-anim {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .cancel-scan-btn {
+            width: 100%;
+            background-color: #ffffff;
+            color: #3b3c4f;
+            border: 1.5px solid #7b5be4;
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .cancel-scan-btn:hover {
+            background-color: #f8f7fa;
+        }
+    </style>
+    <div id="nfc-scanning-window" style="display: none;">
+        <div class="nfc-scanning-overlay">
+            <div class="nfc-scanning-modal">
+                <div class="nfc-close-btn" onclick="closeNfcScanner()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 6L6 18M6 6L18 18" stroke="#8A8D93" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <h2 class="scan-text">SCAN YOUR CARD</h2>
+                <p class="scan-subtext">Hold your IMATAP smart card near the NFC area<br>on this device to search.</p>
+
+                <div class="scan-animation-wrapper">
+                    <div class="ripple-container">
+                        <div class="ripple"></div>
+                        <div class="ripple"></div>
+                        <div class="ripple"></div>
+                        <div class="card-icon">
+                            <img src="./assets/img/smart_card.png" alt="Scan Card">
+                        </div>
+                    </div>
+                    <div class="nfc-wave-icon">
+                        <svg width="40" height="30" viewBox="0 0 40 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15 20C18 17.5 22 17.5 25 20" stroke="#7b5be4" stroke-width="2.5"
+                                stroke-linecap="round" />
+                            <path d="M10 14C16 9 24 9 30 14" stroke="#7b5be4" stroke-width="2.5"
+                                stroke-linecap="round" />
+                            <path d="M5 8C13.5 1 26.5 1 35 8" stroke="#7b5be4" stroke-width="2.5"
+                                stroke-linecap="round" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="nfc-action-buttons">
+                    <button class="waiting-nfc-btn" type="button">
+                        <div class="spinner-border"></div>
+                        Waiting for NFC...
+                    </button>
+                    <button class="cancel-scan-btn" type="button" onclick="closeNfcScanner()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="text" id="nfc-number" style="position: absolute; top: -3050px; right: 0; opacity: 1;">
+
+    <script type="module" src="./assets/js/student-list.js"></script>
+    <script type="module" src="./assets/js/application_config.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outstanding Fees - Edurix</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/sub_nav_style.css">
+    <link rel="stylesheet" href="./assets/css/outstanding.css">
+<script type="module" src="./assets/js/env.js"></script>
+</head>
+<body>
+    <div id="navbar">
+        <div class="navbar-for-application">
+            <div class="navbar-for-application-content">
+                <div class="navbar-for-application-content-left">
+                    <div class="navbar-for-application-content-left-back" onclick="window.history.back()" style="cursor:pointer; margin-right:15px; display:flex; align-items:center; color:#fff;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                    </div>
+                    <div class="navbar-for-application-content-left-logo">
+                        <img src="./assets/img/logo.png" alt="">
+                    </div><span class="nav-separator"> - </span><div id="navbar-for-application-content-left-school-name">Loading...</div><span class="nav-separator"> - </span><div id="navbar-for-application-content-left-school-name-page-name">Outstanding Fees</div>
+                </div>
+                <div class="navbar-for-application-content-righ">
+                    <div class="navbar-for-application-content-righ-icons">
+                        <a title="Back" onclick="history.back()">
+                            <div class="navbar-for-application-content-righ-icons-for-link">
+                                <img src="./assets/img/back.png" alt="">
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="navbar-space"></div>
+    </div>
+
+    <div id="main-application">
+        <div class="outstanding-header-wrapper">
+            <div class="outstanding-header-content">
+                <div class="outstanding-header-left">
+                    <h2>Outstanding Fees</h2>
+                    <p>Track unpaid checked-out classes across all students.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="outstanding-container">
+            <div class="outstanding-controls">
+                <div class="filters-row">
+                    <div class="filter-dropdown class-filter-wrap">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                        </svg>
+                        <select id="classFilter">
+                            <option value="All">All Classes</option>
+                        </select>
+                    </div>
+                    <div class="filter-dropdown search-filter-wrap">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <input type="text" id="studentSearch" placeholder="Search by student name or ID">
+                    </div>
+                </div>
+                <button class="btn-print full-width" onclick="window.print()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                        <rect x="6" y="14" width="12" height="8"></rect>
+                    </svg>
+                    Print Report
+                </button>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-label">TOTAL OUTSTANDING</div>
+                    <div class="stat-value" id="totalOutstandingVal">LKR 0.00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">UNPAID CLASSES</div>
+                    <div class="stat-value" id="unpaidClassesCount">0</div>
+                </div>
+            </div>
+
+            <div id="loader" class="loading-spinner">
+                <p>Loading outstanding records...</p>
+            </div>
+
+            <div class="table-responsive hidden" id="tableContainer">
+                <table class="outstanding-table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th></th>
+                            <th style="text-align: center;">Unpaid<br>Classes</th>
+                            <th style="color: #dc2626;">Total Outstanding</th>
+                            <th>Status</th>
+                            <th style="text-align: right;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="outstandingTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./assets/js/application_config.js"></script>
+    <script type="module" src="./assets/js/outstanding.js"></script>
+</body>
+</html>

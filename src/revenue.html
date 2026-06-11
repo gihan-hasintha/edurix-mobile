@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Revenue Dashboard</title>
+    <!-- Reusing existing common styles -->
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/sub_nav_style.css">
+    <link rel="stylesheet" href="./assets/css/revenue.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="module" src="./assets/js/env.js"></script>
+</head>
+
+<body>
+    <div id="navbar">
+        <div class="navbar-for-application">
+            <div class="navbar-for-application-content">
+                <div class="navbar-for-application-content-left">
+                    <div class="navbar-for-application-content-left-back" onclick="window.history.back()" style="cursor:pointer; margin-right:15px; display:flex; align-items:center; color:#fff;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                    </div>
+                    <div class="navbar-for-application-content-left-logo">
+                        <img src="./assets/img/logo.png" alt="">
+                    </div><span class="nav-separator"> - </span><div id="navbar-for-application-content-left-school-name">Loading...</div><span class="nav-separator"> - </span><div id="navbar-for-application-content-left-school-name-page-name">Revenue Dashboard</div>
+                </div>
+                <div class="navbar-for-application-content-righ">
+                    <div class="navbar-for-application-content-righ-icons">
+                        <a title="Back" onclick="history.back()">
+                            <div class="navbar-for-application-content-righ-icons-for-link">
+                                <img src="./assets/img/back.png" alt="">
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="navbar-space"></div>
+    </div>
+
+    <div id="loader">
+        <svg style="width: 40px; height: 40px; animation: spin 1s linear infinite;" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 2a10 10 0 0 1 10 10"></path>
+        </svg>
+        <style>
+            @keyframes spin {
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+        </style>
+    </div>
+
+    <div id="main-application">
+        <div class="revenue-layout hidden" id="mainContainer">
+
+            <!-- Header -->
+            <div class="header-section">
+                <div class="header-title-area">
+                    <div class="header-text">
+                        <h1>Revenue Overview</h1>
+                        <p>Track your income, payments and financial performance.</p>
+                    </div>
+                </div>
+
+                <div class="header-actions">
+                    <button class="action-btn" id="dateRangeBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
+                        <span id="dateRangeLabel">All Time</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                    </button>
+                    <button class="action-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                        Export Report
+                    </button>
+                    <button class="action-btn icon-only">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 6 2 18 2 18 9" />
+                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                            <rect x="6" y="14" width="12" height="8" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 4 Summary Cards -->
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="card-top">
+                        <div class="card-icon card-icon-red">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4" />
+                                <path d="M4 6v12c0 1.1.9 2 2 2h14v-4" />
+                                <path d="M18 12a2 2 0 0 0-2 2c0 1.1.9 2 2 2h4v-4h-4z" />
+                            </svg>
+                        </div>
+                        <div class="card-info">
+                            <h3>Total Revenue</h3>
+                            <div class="amount text-red" id="cardTotalVal">LKR 0.00</div>
+                        </div>
+                    </div>
+                    <div class="card-stats">
+                        <span id="cardTotalTrend" class="trend-neutral">0% vs Prev Month</span>
+                    </div>
+                    <div class="sparkline-container">
+                        <canvas id="sparkTotal"></canvas>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="card-top">
+                        <div class="card-icon card-icon-green">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                <polyline points="22 4 12 14.01 9 11.01" />
+                            </svg>
+                        </div>
+                        <div class="card-info">
+                            <h3>Paid Amount</h3>
+                            <div class="amount text-green" id="cardPaidVal">LKR 0.00</div>
+                        </div>
+                    </div>
+                    <div class="card-stats">
+                        <span id="cardPaidTrend" class="trend-neutral">0% vs Prev Month</span>
+                    </div>
+                    <div class="sparkline-container">
+                        <canvas id="sparkPaid"></canvas>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="card-top">
+                        <div class="card-icon card-icon-orange">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                        </div>
+                        <div class="card-info">
+                            <h3>Pending Amount</h3>
+                            <div class="amount text-orange" id="cardPendingVal">LKR 0.00</div>
+                        </div>
+                    </div>
+                    <div class="card-stats">
+                        <span id="cardPendingTrend" class="trend-neutral">0% vs Prev Month</span>
+                    </div>
+                    <div class="sparkline-container">
+                        <canvas id="sparkPending"></canvas>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="card-top">
+                        <div class="card-icon card-icon-purple">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z" />
+                                <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" />
+                                <path d="M12 17V7" />
+                            </svg>
+                        </div>
+                        <div class="card-info">
+                            <h3>Refunded Amount</h3>
+                            <div class="amount text-purple" id="cardRefundVal">LKR 0.00</div>
+                        </div>
+                    </div>
+                    <div class="card-stats">
+                        <span class="trend-neutral">= 0% vs Prev Month</span>
+                    </div>
+                    <div class="sparkline-container">
+                        <canvas id="sparkRefund"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-grid">
+                <div class="chart-box">
+                    <div class="chart-header">
+                        <div class="chart-title">
+                            <div class="chart-title-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 3v18h18" />
+                                    <path d="m19 9-5 5-4-4-3 3" />
+                                </svg>
+                            </div>
+                            Revenue Trend
+                        </div>
+                        <select class="action-btn"
+                            style="border: 1px solid #e2e8f0; padding: 6px 10px; border-radius: 6px; outline: none; background: white; font-weight: 500;"
+                            id="trendScale">
+                            <option value="monthly">Monthly</option>
+                            <option value="daily">Daily</option>
+                        </select>
+                    </div>
+                    <div class="main-chart-container">
+                        <canvas id="revenueTrendChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-box">
+                    <div class="chart-header">
+                        <div class="chart-title">
+                            Revenue by Class
+                        </div>
+                    </div>
+                    <div class="donut-legend-container">
+                        <div class="donut-chart-wrapper">
+                            <canvas id="revenueClassChart"></canvas>
+                            <div class="donut-center-text">
+                                <div class="amount" id="donutTotal">LKR 0</div>
+                                <div class="label">Total Revenue</div>
+                            </div>
+                        </div>
+                        <div class="donut-legend" id="donutLegend">
+                            <!-- Legend populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transactions Section -->
+            <div class="transactions-section">
+                <div class="chart-header" style="margin-bottom: 0;">
+                    <div class="chart-title">
+                        <div class="chart-title-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="8" y1="6" x2="21" y2="6" />
+                                <line x1="8" y1="12" x2="21" y2="12" />
+                                <line x1="8" y1="18" x2="21" y2="18" />
+                                <line x1="3" y1="6" x2="3.01" y2="6" />
+                                <line x1="3" y1="12" x2="3.01" y2="12" />
+                                <line x1="3" y1="18" x2="3.01" y2="18" />
+                            </svg>
+                        </div>
+                        Recent Transactions
+                    </div>
+                    <div class="table-controls">
+                        <div class="search-input-wrapper">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8" />
+                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                            </svg>
+                            <input type="text" class="search-input" id="tableSearch"
+                                placeholder="Search student or class...">
+                        </div>
+                        <button class="action-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+                            </svg>
+                            Filter
+                        </button>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Date</th>
+                            <th>Student</th>
+                            <th>Class</th>
+                            <th>Invoice No.</th>
+                            <th>Status</th>
+                            <th>Amount</th>
+                            <th>Payment Method</th>
+                            <th style="text-align: center;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionsTbody">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+
+                <div class="pagination-footer">
+                    <div id="pageInfo">Showing 1 to 5 of 50 transactions</div>
+                    <div class="page-controls" id="pageControls">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module" src="./assets/js/revenue.js"></script>
+    <script type="module" src="./assets/js/application_config.js"></script>
+</body>
+
+</html>

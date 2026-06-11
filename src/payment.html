@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Collection</title>
+    <link rel="stylesheet" href="./assets/css/payment.css">
+    <link rel="stylesheet" href="./assets/css/sub_nav_style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script type="module" src="./assets/js/env.js"></script>
+</head>
+
+<body onload="initPaymentWindow()">
+    <div id="navbar">
+        <div class="navbar-for-application">
+            <div class="navbar-for-application-content">
+                <div class="navbar-for-application-content-left">
+                    <div class="navbar-for-application-content-left-back" onclick="window.history.back()" style="cursor:pointer; margin-right:15px; display:flex; align-items:center; color:#fff;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                    </div>
+                    <div class="navbar-for-application-content-left-logo">
+                        <img src="./assets/img/logo.png" alt="">
+                    </div><span class="nav-separator"> - </span><div id="navbar-for-application-content-left-school-name">Loading...</div><span class="nav-separator"> - </span><div id="navbar-for-application-content-left-school-name-page-name">Payment</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Electron draggable area (title bar is hidden, but overlay is 40px) -->
+    <div
+        style="height: 40px; -webkit-app-region: drag; width: 100%; position: absolute; top: 0; left: 0; z-index: 9999; background: transparent;">
+    </div>
+
+    <!-- Hidden NFC Input -->
+    <div style="position: absolute; top: -3000px; left: -3000px; opacity: 0;">
+        <input type="text" id="nfc-number" placeholder="Scan NFC Card here">
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-window" style="display: none;">
+        <div class="loading-window-content">
+            <svg viewBox="25 25 50 50">
+                <circle r="20" cy="50" cx="50"></circle>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Container -->
+    <div class="container">
+
+        <!-- View 1: Waiting for NFC Scan -->
+        <div id="view-waiting" class="view-section active">
+            <div class="view-section-active-img">
+                <img src="./assets/img/nfc scanner.png" alt="">
+            </div>
+            <h2 class="waiting-title">Waiting for NFC Scan</h2>
+            <p class="waiting-subtitle">Please scan a student's card to verify attendance and collect payment for the
+                active class session.</p>
+        </div>
+
+        <!-- View 2: Payment Verification and Collection -->
+        <div id="view-payment" class="view-section" style="display: none;">
+
+            <div class="profile-header">
+                <div class="profile-image-container">
+                    <div id="studentPhoto" class="profile-image"></div>
+                </div>
+                <h2 id="studentName" class="profile-name">Student Name</h2>
+                <div class="profile-id">ID: <span id="studentIdCode" class="id-code">N/A</span></div>
+            </div>
+
+            <div class="details-card">
+
+                <div class="detail-row">
+                    <div class="detail-icon-container bg-green-light">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#006aff" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="detail-text">
+                        <div class="detail-title">Active Class</div>
+                        <div class="detail-subtitle">Current enrolled class</div>
+                    </div>
+                    <div class="detail-value-badge badge-gray" id="classNameBadge">Class Name</div>
+                </div>
+                <div class="divider"></div>
+
+                <div class="detail-row">
+                    <div class="detail-icon-container bg-green-light">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#006aff" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                    </div>
+                    <div class="detail-text">
+                        <div class="detail-title">Attendance Status</div>
+                        <div class="detail-subtitle">Current attendance verification</div>
+                    </div>
+                    <div class="detail-value-badge badge-green" id="attendanceStatusBadge">
+                        <span class="dot"></span> Verified Present
+                    </div>
+                </div>
+                <div class="divider"></div>
+
+                <div class="detail-row">
+                    <div class="detail-icon-container bg-green-light">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#006aff" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                            <line x1="2" y1="10" x2="22" y2="10"></line>
+                        </svg>
+                    </div>
+                    <div class="detail-text">
+                        <div class="detail-title">Class Fee</div>
+                        <div class="detail-subtitle">Total amount to be paid</div>
+                    </div>
+                    <div class="detail-value-bold text-green" id="classFeeAmount">0.00 LKR</div>
+                </div>
+
+                <button class="mark-payment-btn" id="markPaymentBtn" onclick="markPayment()">Mark Payment</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="./assets/js/payment.js"></script>
+    <script type="module" src="./assets/js/application_config.js"></script>
+</body>
+
+</html>

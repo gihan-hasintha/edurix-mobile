@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outstanding & Upcoming Payments</title>
+    <link rel="stylesheet" href="./assets/css/payment.css">
+    <link rel="stylesheet" href="./assets/css/outstanding-payments.css">
+    <link rel="stylesheet" href="./assets/css/sub_nav_style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script type="module" src="./assets/js/env.js"></script>
+</head>
+
+<body onload="initPaymentWindow()">
+    <div id="navbar">
+        <div class="navbar-for-application">
+            <div class="navbar-for-application-content">
+                <div class="navbar-for-application-content-left">
+                    <div class="navbar-for-application-content-left-back" onclick="window.history.back()" style="cursor:pointer; margin-right:15px; display:flex; align-items:center; color:#fff;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                    </div>
+                    <div class="navbar-for-application-content-left-logo">
+                        <img src="./assets/img/logo.png" alt="">
+                    </div><span class="nav-separator"> - </span><div id="navbar-for-application-content-left-school-name">Payment Gateway</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Electron draggable area -->
+    <div
+        style="height: 40px; -webkit-app-region: drag; width: 100%; position: absolute; top: 0; left: 0; z-index: 9999; background: transparent;">
+    </div>
+
+    <!-- Hidden NFC Input -->
+    <div style="position: absolute; top: -3000px; left: -3000px; opacity: 0;">
+        <input type="text" id="nfc-number" placeholder="Scan NFC Card here">
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-window" style="display: flex;">
+        <div class="loading-window-content">
+            <svg viewBox="25 25 50 50">
+                <circle r="20" cy="50" cx="50"></circle>
+            </svg>
+        </div>
+    </div>
+
+    <!-- View 1: Waiting for NFC Scan -->
+    <div id="view-waiting" class="view-section active"
+        style="height: calc(100vh - 40px); display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <div class="view-section-active-img">
+            <img src="./assets/img/nfc scanner.png" alt="" style="width: 200px; opacity: 0.8;">
+        </div>
+        <h2 style="font-size: 24px; color: #1e293b; margin-top: 20px;">Waiting for Student</h2>
+        <p style="color: #64748b; font-size: 15px;">Please scan a student's NFC card to load their payment profile.</p>
+    </div>
+
+    <!-- View 2: Payment Interface -->
+    <div id="view-payment" class="payment-layout" style="display: none;">
+
+        <!-- Sidebar -->
+        <div class="payment-sidebar">
+
+            <!-- Student Profile -->
+            <div class="student-profile-card">
+                <div class="profile-top">
+                    <div id="studentPhoto" class="profile-image"></div>
+                    <div class="profile-info">
+                        <div style="display: flex; align-items: center;">
+                            <h2 id="studentName">Student Name</h2>
+                            <span class="active-badge">Active</span>
+                        </div>
+                        <p id="studentIdCode" class="id-text">ID: N/A</p>
+                    </div>
+                    <button class="edit-profile-btn" onclick="alert('Edit profile coming soon!')">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 20h9"></path>
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                        </svg>
+                        Edit Profile
+                    </button>
+                </div>
+                <div class="profile-contacts">
+                    <div class="contact-item" title="Parent Name">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span id="parentName">Parent Name</span>
+                    </div>
+                    <div class="contact-item">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
+                            </path>
+                        </svg>
+                        <span id="studentPhone">+94 77 000 0000</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Form -->
+            <div class="payment-form-container">
+                <svg class="wallet-icon-bg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="white"
+                    stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"></path>
+                    <path d="M4 6v12c0 1.1.9 2 2 2h14v-4"></path>
+                    <path d="M18 12a2 2 0 0 0-2 2c0 1.1.9 2 2 2h4v-4h-4z"></path>
+                </svg>
+
+                <div class="payment-form-grid">
+                    <div class="form-grid-left">
+                        <div class="label">Total Due</div>
+                        <div id="totalDueLabel" class="amount">LKR 0.00</div>
+
+                        <div class="amount-input-group">
+                            <span class="currency-prefix">LKR</span>
+                            <input type="number" id="paymentAmountInput" placeholder="0.00" step="0.01" min="0">
+                        </div>
+                    </div>
+
+                    <div class="form-grid-right">
+                        <div class="info-card">
+                            <div class="info-icon bg-blue">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    <polyline points="10 9 9 9 8 9"></polyline>
+                                </svg>
+                            </div>
+                            <div class="info-text">
+                                <div class="label">Amount Due</div>
+                                <div id="formAmountDue" class="value">LKR 0.00</div>
+                            </div>
+                        </div>
+
+                        <div class="info-card">
+                            <div class="info-icon bg-purple">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                            </div>
+                            <div class="info-text">
+                                <div class="label">Last Updated</div>
+                                <div id="formDueDate" class="value">Today</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="processPaymentBtn" class="pay-action-btn" onclick="processPayment()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                        <line x1="1" y1="10" x2="23" y2="10"></line>
+                    </svg>
+                    Process Payment
+                </button>
+            </div>
+
+            <!-- Action Buttons Row -->
+            <div class="quick-actions-row">
+                <div class="action-card" onclick="alert('Payment history feature coming soon!')">
+                    <div class="action-icon icon-red">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    </div>
+                    <div class="action-text">
+                        <h4>Payment History</h4>
+                        <p>View all records</p>
+                    </div>
+                </div>
+                <div class="action-card" onclick="alert('Receipt downloads coming soon!')">
+                    <div class="action-icon icon-blue">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                    </div>
+                    <div class="action-text">
+                        <h4>Download Receipts</h4>
+                        <p>Get PDF copies</p>
+                    </div>
+                </div>
+                <div class="action-card" onclick="alert('Support feature coming soon!')">
+                    <div class="action-icon icon-green">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div class="action-text">
+                        <h4>Contact Support</h4>
+                        <p>Get help</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Classes -->
+            <div class="payment-section" style="padding: 20px;">
+                <div class="section-header" style="margin-bottom: 12px;">
+                    <h3 class="section-title" style="font-size: 15px;">
+                        <div class="title-icon purple" style="width: 24px; height: 24px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                        </div>
+                        Upcoming Classes
+                    </h3>
+                    <span class="link" style="font-size: 12px;">View Full Schedule</span>
+                </div>
+                <div id="upcomingClassesList">
+                    <div class="empty-state">Loading upcoming classes...</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Main Content -->
+        <div class="payment-main">
+
+            <div class="payment-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <div class="title-icon red">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                                <line x1="2" y1="10" x2="22" y2="10"></line>
+                            </svg>
+                        </div>
+                        Outstanding Fees
+                    </h3>
+                    <span class="link">View All</span>
+                </div>
+                <div id="outstandingFeesList">
+                    <div class="empty-state">Loading outstanding fees...</div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="./assets/js/outstanding-payments.js"></script>
+    <script type="module" src="./assets/js/application_config.js"></script>
+</body>
+
+</html>

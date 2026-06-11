@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Scheduler - Edurix</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/sub_nav_style.css">
+    <link rel="stylesheet" href="./assets/css/exam-scheduler.css">
+<script type="module" src="./assets/js/env.js"></script>
+</head>
+<body>
+    <div id="navbar">
+        <div class="navbar-for-application">
+            <div class="navbar-for-application-content">
+                <div class="navbar-for-application-content-left">
+                    <div class="navbar-for-application-content-left-back" onclick="window.history.back()" style="cursor:pointer; margin-right:15px; display:flex; align-items:center; color:#fff;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                    </div>
+                    <div class="navbar-for-application-content-left-logo">
+                        <img src="./assets/img/logo.png" alt="">
+                    </div><span class="nav-separator"> - </span><div id="navbar-for-application-content-left-school-name">Loading...</div><span class="nav-separator"> - </span><div id="navbar-for-application-content-left-school-name-page-name">Exam Scheduler</div>
+                </div>
+                <div class="navbar-for-application-content-righ">
+                    <div class="navbar-for-application-content-righ-icons">
+                        <a title="Back" onclick="history.back()">
+                            <div class="navbar-for-application-content-righ-icons-for-link">
+                                <img src="./assets/img/back.png" alt="">
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="navbar-space"></div>
+    </div>
+
+    <div id="main-application">
+        <div class="exam-page-container">
+
+            <!-- Page Header with action -->
+            <div class="exam-page-header">
+                <div class="exam-page-header-left">
+                    <h2>Exam Scheduler</h2>
+                    <p>Schedule and manage exams for your classes</p>
+                </div>
+                <div class="exam-page-header-right">
+                    <select id="filterClass" class="exam-filter-select">
+                        <option value="All">All Classes</option>
+                    </select>
+                    <select id="filterStatus" class="exam-filter-select">
+                        <option value="All">All Status</option>
+                        <option value="Upcoming">Upcoming</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                    <button class="exam-add-btn" onclick="openExamModal()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        Schedule Exam
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats bar -->
+            <div class="exam-stats-row">
+                <div class="exam-stat-card">
+                    <div class="stat-icon stat-blue">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="statTotalNum">0</span>
+                        <span class="stat-label">Total Exams</span>
+                    </div>
+                </div>
+                <div class="exam-stat-card">
+                    <div class="stat-icon stat-amber">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="statUpcomingNum">0</span>
+                        <span class="stat-label">Upcoming</span>
+                    </div>
+                </div>
+                <div class="exam-stat-card">
+                    <div class="stat-icon stat-green">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="statCompletedNum">0</span>
+                        <span class="stat-label">Completed</span>
+                    </div>
+                </div>
+                <div class="exam-stat-card">
+                    <div class="stat-icon stat-purple">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="statNextDate">—</span>
+                        <span class="stat-label">Next Exam</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exam list -->
+            <div class="exam-list-wrapper">
+                <div id="examLoader" class="exam-loader hidden">
+                    <div class="exam-spinner"></div>
+                    <p>Loading exams...</p>
+                </div>
+                <div id="examEmpty" class="exam-empty hidden">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                    <h3>No exams scheduled yet</h3>
+                    <p>Click the <strong>"+ Schedule Exam"</strong> button above to add your first exam.</p>
+                    <button class="exam-empty-cta" onclick="openExamModal()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        Schedule Your First Exam
+                    </button>
+                </div>
+                <div id="examGrid" class="exam-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule Exam Modal -->
+    <div id="examModal" class="exam-modal-overlay" onclick="closeModalOnOverlay(event)">
+        <div class="exam-modal-box">
+            <div class="exam-modal-header">
+                <div class="modal-header-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#e53e3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="12" y1="17" x2="8" y2="17"></line><line x1="12" y1="9" x2="12" y2="13"></line></svg>
+                </div>
+                <div>
+                    <h2 id="examModalTitle">Schedule New Exam</h2>
+                    <p>Fill in exam details below</p>
+                </div>
+                <button class="exam-modal-close" onclick="closeExamModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <form id="examForm" onsubmit="saveExam(event)">
+                <div class="exam-form-grid">
+                    <div class="exam-form-group full-width">
+                        <label for="examTitle">Exam Title <span class="req">*</span></label>
+                        <input type="text" id="examTitle" placeholder="e.g. Mid-Term Paper, Final Exam" required>
+                    </div>
+                    <div class="exam-form-group">
+                        <label for="examClass">Class <span class="req">*</span></label>
+                        <select id="examClass" required>
+                            <option value="">Select Class</option>
+                        </select>
+                    </div>
+                    <div class="exam-form-group">
+                        <label for="examDate">Exam Date <span class="req">*</span></label>
+                        <input type="date" id="examDate" required>
+                    </div>
+                    <div class="exam-form-group">
+                        <label for="examStartTime">Start Time <span class="req">*</span></label>
+                        <input type="time" id="examStartTime" required>
+                    </div>
+                    <div class="exam-form-group">
+                        <label for="examEndTime">End Time <span class="req">*</span></label>
+                        <input type="time" id="examEndTime" required>
+                    </div>
+                    <div class="exam-form-group">
+                        <label for="examLocation">Location</label>
+                        <input type="text" id="examLocation" placeholder="e.g. Main Hall, Room 201">
+                    </div>
+                    <div class="exam-form-group">
+                        <label for="examMaxMarks">Total Marks</label>
+                        <input type="number" id="examMaxMarks" placeholder="e.g. 100" min="1">
+                    </div>
+                    <div class="exam-form-group full-width">
+                        <label for="examNotes">Notes / Instructions</label>
+                        <textarea id="examNotes" rows="3" placeholder="Any special instructions for students..."></textarea>
+                    </div>
+                </div>
+                <div class="exam-modal-footer">
+                    <button type="button" class="exam-btn-cancel" onclick="closeExamModal()">Cancel</button>
+                    <button type="submit" class="exam-btn-save" id="examSaveBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                        Save Exam
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="./assets/js/application_config.js"></script>
+    <script type="module" src="./assets/js/exam-scheduler.js"></script>
+</body>
+</html>

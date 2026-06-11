@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Timetable - Edurix</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/sub_nav_style.css">
+    <link rel="stylesheet" href="./assets/css/timetable.css">
+<script type="module" src="./assets/js/env.js"></script>
+</head>
+<body>
+    <div id="navbar">
+        <div class="navbar-for-application">
+            <div class="navbar-for-application-content">
+                <div class="navbar-for-application-content-left">
+                    <div class="navbar-for-application-content-left-back" onclick="window.history.back()" style="cursor:pointer; margin-right:15px; display:flex; align-items:center; color:#fff;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                    </div>
+                    <div class="navbar-for-application-content-left-logo">
+                        <img src="./assets/img/logo.png" alt="">
+                    </div><span class="nav-separator"> - </span><div id="navbar-for-application-content-left-school-name">Loading...</div><span class="nav-separator"> - </span><div id="navbar-for-application-content-left-school-name-page-name">Class Timetable</div>
+                </div>
+                <div class="navbar-for-application-content-righ">
+                    <div class="navbar-for-application-content-righ-icons">
+                        <a title="Back" onclick="history.back()">
+                            <div class="navbar-for-application-content-righ-icons-for-link">
+                                <img src="./assets/img/back.png" alt="">
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="navbar-space"></div>
+    </div>
+
+    <div id="main-application">
+        <div class="timetable-header-wrapper">
+            <div class="timetable-header-content">
+                <div class="timetable-header-left">
+                    <h2>Weekly Timetable</h2>
+                    <p>Manage and view your class schedule</p>
+                </div>
+                <div class="timetable-header-right">
+                    <div class="view-toggle">
+                        <span class="toggle-label">List</span>
+                        <label class="switch">
+                            <input type="checkbox" id="viewToggleCheckbox">
+                            <span class="slider round"></span>
+                        </label>
+                        <span class="toggle-label">Grid</span>
+                    </div>
+
+                    <!-- Week Navigation -->
+                    <div class="week-nav">
+                        <button class="btn-week-nav" onclick="navigateWeek(-1)" title="Previous Week">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                        </button>
+                        <input type="date" id="weekDatePicker" class="week-date-picker" title="Pick any date to jump to that week">
+                        <button class="btn-week-nav" onclick="navigateWeek(1)" title="Next Week">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </button>
+                        <button class="btn-today-jump" onclick="selectedWeekDate = new Date(); syncDatePicker(); applyFilters();">Today</button>
+                    </div>
+
+                    <div class="filter-dropdown">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="filter-icon"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        <select id="locationFilter">
+                            <option value="All">All Locations</option>
+                        </select>
+                    </div>
+
+                    <button class="btn-print" onclick="window.print()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                            <rect x="6" y="14" width="12" height="8"></rect>
+                        </svg>
+                        Print Timetable
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="timetable-container">
+            <div id="loader" class="loading-spinner">
+                <p>Loading timetable...</p>
+            </div>
+            <div id="errorMessage" class="error-message hidden">
+                Failed to load classes. Please check your connection.
+            </div>
+            <div class="timetable-grid" id="timetableGrid">
+                <!-- Columns for days will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./assets/js/application_config.js"></script>
+    <script type="module" src="./assets/js/timetable.js"></script>
+</body>
+</html>

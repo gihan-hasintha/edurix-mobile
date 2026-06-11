@@ -1,0 +1,16 @@
+{
+  "appId": "com.edurix.app",
+  "appName": "Edurix",
+  "bundledWebRuntime": false,
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    },
+    "StatusBar": {
+      "overlaysWebView": false,
+      "style": "DARK",
+      "backgroundColor": "#ff0000"
+    }
+  }
+}

@@ -1,0 +1,735 @@
+body {
+    box-sizing: border-box;
+}
+
+.nfc-scanning-overlay {
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nfc-scanning-modal {
+    padding: 40px;
+    width: 90%;
+    max-width: 420px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    font-family: inherit;
+}
+
+.nfc-close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.nfc-close-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.scan-text {
+    color: #1a1b35;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 10px 0 12px 0;
+    letter-spacing: 0.5px;
+}
+
+.scan-subtext {
+    color: #6e6f76;
+    font-size: 14px;
+    margin: 0 0 40px 0;
+    line-height: 1.5;
+}
+
+.scan-animation-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+.ripple-container {
+    position: relative;
+    width: 220px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.card-icon {
+    position: relative;
+    z-index: 10;
+    width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.card-icon img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    display: block;
+}
+
+.ripple {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 1.5px solid #7b5be4;
+    animation: ripple-anim 2.5s cubic-bezier(0.1, 0.2, 0.3, 1) infinite;
+    opacity: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.ripple:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.ripple:nth-child(2) {
+    animation-delay: 0.8s;
+}
+
+.ripple:nth-child(3) {
+    animation-delay: 1.6s;
+}
+
+@keyframes ripple-anim {
+    0% {
+        width: 100px;
+        height: 100px;
+        opacity: 0.6;
+    }
+
+    100% {
+        width: 380px;
+        height: 380px;
+        opacity: 0;
+    }
+}
+
+.nfc-wave-icon {
+    margin-top: 20px;
+}
+
+.nfc-action-buttons {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.waiting-nfc-btn {
+    width: 100%;
+    background-color: #f3f0ff;
+    color: #7b5be4;
+    border: none;
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: default;
+}
+
+.spinner-border {
+    width: 18px;
+    height: 18px;
+    border: 2.5px solid #7b5be44d;
+    border-top: 2.5px solid #7b5be4;
+    border-radius: 50%;
+    animation: spin-anim 1s linear infinite;
+}
+
+@keyframes spin-anim {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.cancel-scan-btn {
+    width: 100%;
+    background-color: #ffffff;
+    color: #3b3c4f;
+    border: 1.5px solid #7b5be4;
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cancel-scan-btn:hover {
+    background-color: #f8f7fa;
+}
+
+.form-card {
+    padding-bottom: 40px;
+}
+
+.form-card label {
+    display: block;
+    padding: 5px 0px;
+    padding-top: 20px;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+.form-card input {
+    width: 100%;
+    padding: 12px 16px;
+    background-color: #ffffff;
+    border-radius: 4px;
+    border: 1px solid #4646463d;
+    color: #000;
+    outline: none;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.form-card select {
+    width: 100%;
+    padding: 12px 16px;
+    background-color: #ffffff;
+    border-radius: 4px;
+    border: 1px solid #4646463d;
+    color: #000;
+    outline: none;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.student-form-bts {
+    display: flex;
+    gap: 8px;
+}
+
+.form-card .student-form-bts-scan-button {
+    width: 73%;
+    background-color: #0635f1;
+    color: white;
+    border: none;
+    font-size: 13px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    font-weight: 500;
+    padding: 10px;
+    border-radius: 2px;
+    margin-top: 12px;
+    cursor: pointer;
+}
+
+.form-card .student-form-bts-scan-button img {
+    width: 20px;
+    padding-top: 2px;
+}
+
+.form-card .submit-btn {
+    width: 100%;
+    background-color: red;
+    color: white;
+    border: none;
+    font-size: 13px;
+    text-transform: uppercase;
+    font-weight: 500;
+    padding: 7px;
+    border-radius: 2px;
+    margin-top: 12px;
+    cursor: pointer;
+}
+
+.container-window {
+    width: 100%;
+    height: calc(100% - 40px);
+    top: 40px;
+    position: fixed;
+    overflow: auto;
+}
+
+.photo-preview-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    height: 20%;
+}
+
+.photo-preview-container img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Cropping Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.cropper-container {
+    max-height: 400px;
+    margin-bottom: 20px;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.modal-btn {
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    border: none;
+}
+
+.btn-cancel {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+.btn-crop {
+    background-color: red;
+    color: white;
+}
+
+.student-main-info {
+    display: block;
+    gap: 20px;
+    justify-content: space-between;
+}
+
+.student-main-info-left-top-photo {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.student-main-info-left {
+    width: 100%;
+}
+
+.photo-group {
+    width: 55%;
+    margin: 0 auto;
+}
+
+.student-main-info-right {
+    width: 100%;
+}
+
+.loading-window-content {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    -webkit-app-region: drag;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    background-color: #ff0000;
+}
+
+/* Status Modal Styles */
+.status-modal {
+    display: none;
+    position: fixed;
+    z-index: 3000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    align-items: center;
+    justify-content: center;
+}
+
+.status-content {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalPop {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.status-icon-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+.status-icon {
+    width: 80px;
+    height: 80px;
+}
+
+/* Success SVG Animation */
+.success-svg {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: block;
+    stroke-width: 2;
+    stroke: #fff;
+    stroke-miterlimit: 10;
+    box-shadow: inset 0px 0px 0px #35be3a;
+    animation: fill-success .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+}
+
+.success-svg__circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 2;
+    stroke-miterlimit: 10;
+    stroke: #35be3a;
+    fill: none;
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.success-svg__check {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+
+/* Error SVG Animation */
+.error-svg {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: block;
+    stroke-width: 2;
+    stroke: #fff;
+    stroke-miterlimit: 10;
+    box-shadow: inset 0px 0px 0px #f44336;
+    animation: fill-error .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+}
+
+.error-svg__circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 2;
+    stroke-miterlimit: 10;
+    stroke: #f44336;
+    fill: none;
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.error-svg__x {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+
+@keyframes stroke {
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes scale {
+
+    0%,
+    100% {
+        transform: none;
+    }
+
+    50% {
+        transform: scale3d(1.1, 1.1, 1);
+    }
+}
+
+@keyframes fill-success {
+    100% {
+        box-shadow: inset 0px 0px 0px 40px #35be3a;
+    }
+}
+
+@keyframes fill-error {
+    100% {
+        box-shadow: inset 0px 0px 0px 40px #f44336;
+    }
+}
+
+.status-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.status-message {
+    font-size: 15px;
+    color: #666;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.status-btn {
+    width: 120px;
+    padding: 12px;
+    border-radius: 2px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.status-success .status-btn {
+    background-color: #35be3a;
+    color: white;
+}
+
+.status-error .status-btn {
+    background-color: #f44336;
+    color: white;
+}
+
+/* From Uiverse.io by helloppp */
+/* Inspired by: m3.material.io/components/progress-indicators/overview */
+
+.loader {
+    width: 32px;
+    /* Subpixels get cut off */
+    overflow: visible;
+    transform: rotate(-90deg);
+    transform-origin: center;
+
+    --active: #ffffff00;
+    --track: #ededed;
+
+    --duration: 8s;
+
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        rotate: 0deg;
+    }
+
+    100% {
+        rotate: 360deg;
+    }
+}
+
+.active {
+    stroke: var(--active);
+    stroke-linecap: round;
+    stroke-dashoffset: 360;
+    animation: active-animation var(--duration) ease-in-out infinite;
+}
+
+@keyframes active-animation {
+    0% {
+        stroke-dasharray: 0 0 0 360 0 360;
+    }
+
+    12.5% {
+        stroke-dasharray: 0 0 270 90 270 90;
+    }
+
+    25% {
+        stroke-dasharray: 0 270 0 360 0 360;
+    }
+
+    37.5% {
+        stroke-dasharray: 0 270 270 90 270 90;
+    }
+
+    50% {
+        stroke-dasharray: 0 540 0 360 0 360;
+    }
+
+    50.001% {
+        stroke-dasharray: 0 180 0 360 0 360;
+    }
+
+    62.5% {
+        stroke-dasharray: 0 180 270 90 270 90;
+    }
+
+    75% {
+        stroke-dasharray: 0 450 0 360 0 360;
+    }
+
+    87.5% {
+        stroke-dasharray: 0 450 270 90 270 90;
+    }
+
+    87.501% {
+        stroke-dasharray: 0 90 270 90 270 90;
+    }
+
+    100% {
+        stroke-dasharray: 0 360 1 360 0 360;
+    }
+}
+
+.track {
+    stroke: var(--track);
+    stroke-linecap: round;
+    stroke-dashoffset: 360;
+    animation: track-animation var(--duration) ease-in-out infinite;
+}
+
+@keyframes track-animation {
+    0% {
+        stroke-dasharray: 0 20 320 40 320 40;
+    }
+
+    12.5% {
+        stroke-dasharray: 0 290 50 310 50 310;
+    }
+
+    25% {
+        stroke-dasharray: 0 290 320 40 320 40;
+    }
+
+    37.5% {
+        stroke-dasharray: 0 560 50 310 50 310;
+    }
+
+    37.501% {
+        stroke-dasharray: 0 200 50 310 50 310;
+    }
+
+    50% {
+        stroke-dasharray: 0 200 320 40 320 40;
+    }
+
+    62.5% {
+        stroke-dasharray: 0 470 50 310 50 310;
+    }
+
+    62.501% {
+        stroke-dasharray: 0 110 50 310 50 310;
+    }
+
+    75% {
+        stroke-dasharray: 0 110 320 40 320 40;
+    }
+
+    87.5% {
+        stroke-dasharray: 0 380 50 310 50 310;
+    }
+
+    100% {
+        stroke-dasharray: 0 380 320 40 320 40;
+    }
+}
+
+
+
+.nfc-added-status-window-content {
+    width: 100%;
+    height: 25px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #0043e0;
+    font-size: 10px;
+    gap: 5px;
+    color: #ffffff;
+    text-align: center;
+}
+
+.nfc-added-status-window-content-img img {
+    width: 11px;
+}
+
+.otp-window-content {
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    z-index: 9999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

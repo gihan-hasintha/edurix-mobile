@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+body {
+    font-family: "Inter", sans-serif;
+    margin: 0;
+    background-color: white;
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: "Inter", sans-serif;
+}
+
+.navbar-for-application {
+    width: 100%;
+    height: 40px;
+    -webkit-app-region: drag;
+    left: 0;
+    background-color: #ff0000;
+    position: fixed;
+    top: 0;
+    z-index: 9999999999999;
+}
+
+.navbar-for-application-content {
+    width: 92%;
+    margin: 0 auto;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    box-sizing: border-box;
+    justify-content: space-between;
+}
+
+.navbar-for-application-content-righ {
+    padding-right: 120px;
+    display: flex;
+}
+
+.navbar-for-application-content-righ-icons-for-link img {
+    width: 18px;
+}
+
+.navbar-for-application-content-righ-icons a {
+    text-decoration: none;
+    color: white;
+    -webkit-app-region: no-drag;
+    transition: 0.2s;
+    background-color: transparent;
+    height: 40px;
+    width: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.navbar-for-application-content-righ-icons a:hover {
+    background-color: #ffffff3e;
+}
+
+
+@media (max-width: 768px) {
+    .navbar-for-application-content {
+        width: 100%;
+        padding: 0 15px;
+    }
+}
+
+.navbar-space {
+    width: 100%;
+    height: 40px;
+}
+
+.navbar-for-application-content-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    color: white;
+    font-weight: 500;
+    font-size: 13px;
+}
+
+.navbar-for-application-content-left-logo img {
+    width: 80px;
+}
+
+@media (max-width: 768px) {
+    .navbar-for-application-content-left {
+        font-size: 11px !important;
+        gap: 4px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        flex: 1;
+    }
+
+    .navbar-for-application-content-left-logo img {
+        width: 70px !important;
+    }
+
+    #navbar-for-application-content-left-school-name,
+    .nav-separator:first-of-type {
+        display: none !important;
+    }
+
+    #navbar-for-application-content-left-school-name-page-name {
+        text-overflow: ellipsis !important;
+        overflow: hidden !important;
+    }
+}

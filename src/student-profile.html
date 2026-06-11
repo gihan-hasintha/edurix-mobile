@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Profile - Edurix</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/student-profile.css">
+    <script type="module" src="./assets/js/env.js"></script>
+</head>
+
+<body onload="initStudentProfile()">
+
+    <!-- Standard Navbar -->
+    <div id="navbar">
+        <div class="navbar-for-application">
+            <div class="navbar-for-application-content">
+                <div class="navbar-for-application-content-left">
+                    <div class="navbar-for-application-content-left-back" onclick="window.history.back()"
+                        style="cursor:pointer; margin-right:15px; display:flex; align-items:center; color:#fff;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                    </div>
+                    <div class="navbar-for-application-content-left-logo">
+                        <img src="./assets/img/logo.png" alt="">
+                    </div><span class="nav-separator"> - </span>
+                    <div id="navbar-for-application-content-left-school-name">Loading...</div><span
+                        class="nav-separator"> - </span>
+                    <div id="navbar-for-application-content-left-school-name-page-name">Student Profile</div>
+                </div>
+                <div id="navbar-for-application-content-righ-for-showing-visibilityof-logged-software"
+                    style="display: none;">
+                    <div class="navbar-for-application-content-righ">
+                        <!-- Same icons as other pages can be added here if needed, keeping it simple for now -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="navbar-space"></div>
+    </div>
+
+    <!-- Hidden NFC Input for background scanning -->
+    <input type="text" id="nfc-number" style="position: absolute; top: -9999px; left: -9999px;" autofocus>
+
+    <div class="profile-container">
+
+        <!-- Waiting State Overlay -->
+        <div id="waiting-state">
+            <div class="scan-animation">
+                <img src="./assets/img/contactless.png" alt="Scan Card">
+            </div>
+            <h2 class="waiting-title">Scan Student Card</h2>
+            <p class="waiting-subtitle">Hold the IMATAP smart card near the NFC reader<br>to view student profile and
+                history.</p>
+        </div>
+
+        <!-- Main Content Area (Hidden until scan) -->
+        <div id="profile-main-area" style="display: none; width: 100%; display: flex; gap: 20px;">
+
+            <!-- Header -->
+            <div class="profile-header"
+                style="background: var(--surface-color); border-radius: 16px; padding: 0px; border-bottom: none;">
+                <div id="studentPhoto" class="profile-photo" style="background-image: url('./assets/img/student.png');">
+                </div>
+                <h2 id="studentName" class="profile-name">Student Name</h2>
+                <div id="studentIdCode" class="profile-id">STU-0000</div>
+            </div>
+
+            <!-- Top Stats Area -->
+            <div class="profile-stats-bar" id="profileStatsBar">
+                <div class="stat-card" style="background: #f8fbff;">
+                    <div class="stat-icon" style="color: #3b82f6; background: #e0f2fe;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                            <path d="M9 16l2 2 4-4"></path>
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="statAttendanceVal">0%</div>
+                        <div class="stat-label">Attendance Rate</div>
+                        <div class="stat-sub" id="statAttendanceSub" style="color: #10b981;">N/A</div>
+                    </div>
+                </div>
+                <div class="stat-card" style="background: #f0fdf4;">
+                    <div class="stat-icon" style="color: #10b981; background: #dcfce7;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="statCoursesVal">0</div>
+                        <div class="stat-label">Courses Enrolled</div>
+                        <div class="stat-sub" id="statCoursesSub" style="color: #10b981;">Active</div>
+                    </div>
+                </div>
+                <div class="stat-card" style="background: #faf5ff;">
+                    <div class="stat-icon" style="color: #a855f7; background: #f3e8ff;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                            <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="statExamsVal">2</div>
+                        <div class="stat-label">Exams Completed</div>
+                        <div class="stat-sub" id="statExamsSub" style="color: #a855f7;">This Term</div>
+                    </div>
+                </div>
+                <div class="stat-card" style="background: #fff7ed;">
+                    <div class="stat-icon" style="color: #f97316; background: #ffedd5;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"></path>
+                            <path d="M4 6v12c0 1.1.9 2 2 2h14v-4"></path>
+                            <path d="M18 12a2 2 0 0 0-2 2c0 1.1.9 2 2 2h4v-4h-4z"></path>
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="statOutstandingVal">LKR 0</div>
+                        <div class="stat-label">Outstanding</div>
+                        <div class="stat-sub" id="statOutstandingSub" style="color: #10b981;">All Paid</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-tabs-wrapper">
+                <div class="content-tabs">
+                    <button class="tab-btn active" onclick="switchTab('attendance')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            style="margin-right: 8px; vertical-align: middle;">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        Attendance Records
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('payments')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            style="margin-right: 8px; vertical-align: middle;">
+                            <rect x="2" y="5" width="20" height="14" rx="2" ry="2"></rect>
+                            <line x1="2" y1="10" x2="22" y2="10"></line>
+                        </svg>
+                        Payment History
+                    </button>
+                </div>
+
+                <div class="tabs-content-area">
+                    <!-- Attendance Tab -->
+                    <div id="tab-attendance" class="tab-content active">
+                        <div class="table-responsive">
+                            <div class="filter-bar">
+                                <div class="filter-search-group">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                        class="search-icon">
+                                        <circle cx="11" cy="11" r="8"></circle>
+                                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                    </svg>
+                                    <input type="text" id="attendanceSearch" placeholder="Search by class name...">
+                                </div>
+                                <div class="filter-controls-row">
+                                    <div class="filter-item">
+                                        <select id="attendanceDay" class="day-filter">
+                                            <option value="">All Days</option>
+                                            <option value="Monday">Monday</option>
+                                            <option value="Tuesday">Tuesday</option>
+                                            <option value="Wednesday">Wednesday</option>
+                                            <option value="Thursday">Thursday</option>
+                                            <option value="Friday">Friday</option>
+                                            <option value="Saturday">Saturday</option>
+                                            <option value="Sunday">Sunday</option>
+                                        </select>
+                                    </div>
+                                    <div class="filter-item">
+                                        <input type="date" id="attendanceDate">
+                                    </div>
+                                    <button id="clearAttendanceFilter" class="btn-clear">Clear</button>
+                                </div>
+                            </div>
+                            <div class="table-scroll-container">
+                                <table class="history-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Class Name</th>
+                                            <th>Date</th>
+                                            <th>Time</th>
+                                            <th>Status</th>
+                                            <th style="text-align: right;">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="attendanceTableBody">
+                                        <tr>
+                                            <td colspan="5"
+                                                style="text-align: center; color: var(--text-muted); padding: 20px;">
+                                                Loading attendance records...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payments Tab -->
+                    <div id="tab-payments" class="tab-content">
+                        <div class="table-responsive">
+                            <div class="filter-bar">
+                                <div class="filter-search-group">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                        class="search-icon">
+                                        <circle cx="11" cy="11" r="8"></circle>
+                                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                    </svg>
+                                    <input type="text" id="paymentSearch" placeholder="Search by class name...">
+                                </div>
+                                <div class="filter-controls-row">
+                                    <div class="filter-item">
+                                        <select id="paymentDay" class="day-filter">
+                                            <option value="">All Days</option>
+                                            <option value="Monday">Monday</option>
+                                            <option value="Tuesday">Tuesday</option>
+                                            <option value="Wednesday">Wednesday</option>
+                                            <option value="Thursday">Thursday</option>
+                                            <option value="Friday">Friday</option>
+                                            <option value="Saturday">Saturday</option>
+                                            <option value="Sunday">Sunday</option>
+                                        </select>
+                                    </div>
+                                    <div class="filter-item">
+                                        <input type="date" id="paymentDate">
+                                    </div>
+                                    <button id="clearPaymentFilter" class="btn-clear">Clear</button>
+                                </div>
+                            </div>
+                            <div class="table-scroll-container">
+                                <table class="history-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Class Name</th>
+                                            <th>Date</th>
+                                            <th>Amount & Type</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="paymentsTableBody">
+                                        <tr>
+                                            <td colspan="4"
+                                                style="text-align: center; color: var(--text-muted); padding: 20px;">
+                                                Loading payment records...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- End content-tabs-wrapper -->
+
+            <!-- Profile Info at the bottom -->
+            <div class="profile-info-group"
+                style="display: flex; flex-direction: column; gap: 12px; padding-bottom: 20px;">
+                <div class="info-item">
+                    <div class="info-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div class="info-content">
+                        <span class="info-label">Phone Number</span>
+                        <span id="studentPhone" class="info-value">07X-XXXXXXX</span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                    </div>
+                    <div class="info-content">
+                        <span class="info-label">Birthday</span>
+                        <span id="studentBirthday" class="info-value">YYYY-MM-DD</span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                    </div>
+                    <div class="info-content">
+                        <span class="info-label">Address</span>
+                        <span id="studentAddress" class="info-value" style="white-space: normal;">Student Address</span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </div>
+                    <div class="info-content">
+                        <span class="info-label">Parent's Name</span>
+                        <span id="parentName" class="info-value">Parent Name</span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div class="info-content">
+                        <span class="info-label">Parent's Phone</span>
+                        <span id="parentPhone" class="info-value">07X-XXXXXXX</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div id="toastContainer"
+        style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;">
+    </div>
+
+    <script type="module" src="./assets/js/student-profile.js"></script>
+    <script type="module" src="./assets/js/application_config.js"></script>
+
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+            document.getElementById('tab-' + tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+    </script>
+</body>
+
+</html>

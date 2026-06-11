@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Attendance - Edurix</title>
+    <link rel="stylesheet" href="./assets/css/sub_nav_style.css">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/attendance.css">
+<script type="module" src="./assets/js/env.js"></script>
+</head>
+
+<body onload="pageloadimasoft()">
+    <div id="navbar">
+        <div class="navbar-for-application">
+            <div class="navbar-for-application-content">
+                <div class="navbar-for-application-content-left">
+                    <div class="navbar-for-application-content-left-back" onclick="window.history.back()" style="cursor:pointer; margin-right:15px; display:flex; align-items:center; color:#fff;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                    </div>
+                    <div class="navbar-for-application-content-left-logo">
+                        <img src="./assets/img/logo.png" alt="Logo">
+                    </div><span class="nav-separator"> - </span><div id="navbar-for-application-content-left-school-name">Loading...</div><span class="nav-separator"> - </span><div id="navbar-for-application-content-left-school-name-page-name">Attendance Mark</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navbar-space"></div>
+
+    <!-- Fullscreen Loading overlay -->
+    <div id="loading-window">
+        <div class="loading-window-content">
+            <!-- From Uiverse.io by barisdogansutcu -->
+            <svg viewBox="25 25 50 50">
+                <circle r="20" cy="50" cx="50"></circle>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Hidden NFC Input Field (USB reader acts as keyboard typing here followed by Enter) -->
+    <div style="position: absolute; top: -3000px; left: -3000px; opacity: 0;">
+        <input type="text" id="nfc-number" placeholder="Scan NFC Card here">
+    </div>
+
+    <!-- Toast alerts container for real-time scan feedback -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div id="main-application">
+        <div class="attendance-layout">
+
+            <!-- Left Column: Controls & NFC Status -->
+            <div class="attendance-sidebar">
+
+                <!-- Class Session widget -->
+                <div class="card-panel class-session-widget">
+                    <h3 class="card-title-sec">
+                        <img src="./assets/img/shopping-list.png" alt="" style="width: 16px;">
+                        Class Session
+                    </h3>
+
+                    <!-- Active Class Metadata widget -->
+                    <div id="activeClassDetails" class="active-class-widget">
+                        <div id="activeClassStatusBadge" class="active-class-status status-inactive">Loading...</div>
+                        <h4 id="activeClassName" class="active-class-name">Loading schedule...</h4>
+                        <div class="active-class-meta">
+                            <div class="active-class-meta-item" style="gap: 5px;">
+                                <img src="./assets/img/location-pin.png" alt="" style="filter: grayscale(1);">
+                                <span id="activeClassLocation">Checking date and time</span>
+                            </div>
+                            <div class="active-class-meta-item">
+                                <span id="activeClassSchedule"></span>
+                            </div>
+                            <div class="active-class-meta-item" id="activeClassDurationContainer"
+                                style="display: none;padding-top: 10px;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    style="opacity: 0.5;">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                                <span id="activeClassDuration"></span>
+                            </div>
+                            <div class="active-class-meta-item" id="activeClassCountdownContainer"
+                                style="display: none;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    style="color: #e11d48;">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                                <span id="activeClassCountdown" style="color: #e11d48; font-weight: 600;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Action Buttons -->
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button class="next-class-btn" style="flex: 1; margin-top: 0;border: 1px solid #E5E7EB;"
+                            onclick="openNextClassModal()">View Next Classes</button>
+                        <button class="next-class-btn"
+                            style="flex: 1; background: #0247f5; color: white; margin-top: 0;"
+                            onclick="openPaymentWindow()">Collect Payment</button>
+                    </div>
+
+                    <div id="endClassBtnContainer" style="display: none; margin-top: 10px;">
+                        <button
+                            style="width: 100%; background: #fff1f2; color: #e11d48; border: 1px solid #fda4af; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px; transition: all 0.2s;"
+                            onmouseover="this.style.background='#ffe4e6'" onmouseout="this.style.background='#fff1f2'"
+                            onclick="confirmEndClassSession()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="9" y1="9" x2="15" y2="15"></line>
+                                <line x1="15" y1="9" x2="9" y2="15"></line>
+                            </svg>
+                            End Class Manually
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- NFC Scanning radar status -->
+                <div class="card-panel nfc-scanning-dashboard-widget" onclick="focusNfcField()">
+                    <div class="radar-wrapper">
+                        <div class="radar-circle"></div>
+                        <div class="radar-circle"></div>
+                        <div class="radar-circle"></div>
+                        <div class="radar-center">
+                            <img src="./assets/img/contactless.png" alt="NFC">
+                        </div>
+                    </div>
+                    <div class="scan-instruction-text">NFC SCANNER READY</div>
+                    <div class="scan-instruction-sub">Hold smart card near the NFC reader device to mark attendance
+                    </div>
+
+                    <div class="scan-indicator-badge">
+                        <span class="ping"></span>
+                        Listening for scans
+                    </div>
+                </div>
+
+
+
+            </div>
+
+            <!-- Right Column: Stats & Student list -->
+            <div class="attendance-main-panel">
+
+                <!-- Statistics row -->
+                <div class="attendance-stats-row">
+                    <div class="stat-box">
+                        <div class="stat-box-icon icon-enrolled">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-box-info">
+                            <span class="stat-box-value" id="statsEnrolled">0</span>
+                            <span class="stat-box-label">Enrolled Students</span>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-icon icon-present">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                        <div class="stat-box-info">
+                            <span class="stat-box-value" id="statsPresent">0</span>
+                            <span class="stat-box-label">Present Today</span>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-icon icon-absent">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <line x1="17" y1="8" x2="22" y2="13"></line>
+                                <line x1="22" y1="8" x2="17" y2="13"></line>
+                            </svg>
+                        </div>
+                        <div class="stat-box-info">
+                            <span class="stat-box-value" id="statsAbsent">0</span>
+                            <span class="stat-box-label">Absent Today</span>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-icon icon-rate">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="20" x2="18" y2="10"></line>
+                                <line x1="12" y1="20" x2="12" y2="4"></line>
+                                <line x1="6" y1="20" x2="6" y2="14"></line>
+                            </svg>
+                        </div>
+                        <div class="stat-box-info">
+                            <span class="stat-box-value" id="statsRate">0%</span>
+                            <span class="stat-box-label">Attendance Rate</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Registered Students list -->
+                <div class="attendance-students-card">
+                    <div class="students-card-header">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <h3 class="students-card-title" style="margin: 0;">Class Roster & Status</h3>
+                            <button id="unpaidCheckedOutBtn" onclick="openUnpaidCheckedOutModal()" style="display:none; align-items:center; gap:8px; background:#fef2f2; border:1px solid #fecaca; color:#dc2626; padding:6px 12px; border-radius:20px; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                                Unpaid & Checked Out
+                                <span id="unpaidCheckedOutCount" style="background:#dc2626; color:white; border-radius:10px; padding:2px 8px; font-size:11px;">0</span>
+                            </button>
+                        </div>
+                        <div class="students-filters">
+                            <select id="studentStatusFilter" class="status-filter-select"
+                                onchange="handleStatusFilter(this.value)">
+                                <option value="All">All Students</option>
+                                <option value="Present">Present</option>
+                                <option value="Absent">Absent</option>
+                            </select>
+                            <select id="paymentStatusFilter" class="status-filter-select"
+                                onchange="handlePaymentFilter(this.value)">
+                                <option value="All">All Payments</option>
+                                <option value="Paid">Paid</option>
+                                <option value="Unpaid">Unpaid</option>
+                            </select>
+                            <div class="students-search">
+                                <img src="./assets/img/search-user.png" alt="" class="students-search-icon"
+                                    style="filter: grayscale(1);">
+                                <input type="text" id="studentSearch" placeholder="Search student name or ID..."
+                                    oninput="handleSearch(this.value)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Students Grid -->
+                    <div id="studentsGrid" class="students-attendance-grid">
+                        <div class="empty-state">
+                            <img src="./assets/img/search-user.png" alt="">
+                            <h4 class="empty-state-title">Select a Class Session</h4>
+                            <p>Select a class session from the dropdown to see the enrolled students roster.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Class Ended Modal -->
+    <div id="classEndedModal" class="modal">
+        <div class="modal-content" style="max-width: 400px; text-align: center; padding: 30px;">
+            <div style="font-size: 48px; margin-bottom: 20px;">⏱️</div>
+            <h2 style="margin-bottom: 15px; color: #111827;">Class Session Ended</h2>
+            <p style="color: #6B7280; margin-bottom: 25px; line-height: 1.5; font-size: 14px;">The scheduled time for
+                this class has ended. Would you like to officially end the session now?</p>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button onclick="dismissClassEndedModal()"
+                    style="padding: 10px 20px; border: 1px solid #E5E7EB; background: white; border-radius: 8px; cursor: pointer; color: #374151; font-weight: 500;">Keep
+                    Running</button>
+                <button onclick="confirmEndClassSession()"
+                    style="padding: 10px 20px; background: #e11d48; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">End
+                    Class Now</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Next Class Modal -->
+    <div id="nextClassModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Today's Upcoming Classes</h2>
+                <span class="close-btn" onclick="closeNextClassModal()">&times;</span>
+            </div>
+            <div id="nextClassesList" class="next-classes-list">
+                <!-- List will be populated dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeNextClassModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scan Verification Modal -->
+    <div id="scanSuccessModal" class="modal" style="z-index: 10000; display: none;">
+        <div class="modal-content"
+            style="max-width: 420px; text-align: center; padding: 40px; border-radius: 12px; position: relative; overflow: hidden; background: white;">
+            <!-- Background Pattern -->
+            <div
+                style="position: absolute; top: 15%; left: 10%; opacity: 0.15; background-image: radial-gradient(circle, #3b82f6 2px, transparent 2.5px); background-size: 16px 16px; width: 64px; height: 96px;">
+            </div>
+            <div
+                style="position: absolute; top: 15%; right: 10%; opacity: 0.15; background-image: radial-gradient(circle, #3b82f6 2px, transparent 2.5px); background-size: 16px 16px; width: 64px; height: 96px;">
+            </div>
+
+            <div
+                style="position: relative; display: inline-block; width: 138px; height: 138px; margin: 0 auto 20px auto;">
+                <div id="scanSuccessPhoto"
+                    style="width: 100%; height: 100%; border-radius: 50%; background-size: cover; background-position: center; border: 4px solid #3b82f6; box-shadow: 0 4px 10px rgba(0,0,0,0.1); box-sizing: border-box;">
+                </div>
+
+                <!-- Floating Checkmark Icon -->
+                <div id="scanSuccessIconContainer"
+                    style="position: absolute; bottom: 2px; right: 2px; width: 34px; height: 34px; background: #10b981; border-radius: 50%; border: 3px solid white; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); box-sizing: content-box;">
+                    <svg id="scanSuccessIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white"
+                        stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </div>
+            </div>
+
+            <h2 id="scanSuccessName"
+                style="margin: 0 0 12px 0; color: #0f172a; font-size: 26px; font-weight: 800; letter-spacing: -0.5px;">
+                Student Name</h2>
+
+            <div style="display: flex; justify-content: center; margin-bottom: 30px;">
+                <div
+                    style="display: flex; align-items: center; gap: 8px; background-color: #eff6ff; padding: 6px 16px; border-radius: 20px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <circle cx="8" cy="11" r="3"></circle>
+                        <path d="M18 11h-4"></path>
+                        <path d="M18 15h-4"></path>
+                        <path d="M11 16H5"></path>
+                    </svg>
+                    <span id="scanSuccessId" style="color: #475569; font-size: 15px; font-weight: 600;">ID: </span>
+                </div>
+            </div>
+
+            <div style="border-top: 1px solid #f1f5f9; margin-bottom: 25px;"></div>
+
+            <div style="display: flex; align-items: center; text-align: left; gap: 16px;">
+                <div id="scanSuccessStatusIconBg"
+                    style="width: 52px; height: 52px; border-radius: 50%; background-color: #f0fdf4; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <svg id="scanSuccessStatusIcon" width="26" height="26" viewBox="0 0 24 24" fill="none"
+                        stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M9 12l2 2 4-4"></path>
+                    </svg>
+                </div>
+                <div>
+                    <div id="scanSuccessStatus"
+                        style="color: #10b981; font-weight: 700; font-size: 16px; margin-bottom: 4px;">Check-Out
+                        Successful</div>
+                    <div id="scanSuccessSubtext" style="color: #64748b; font-size: 13px; font-weight: 500;">You have
+                        been checked out successfully.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Unpaid Alert Modal -->
+    <div id="unpaidAlertModal" class="modal" style="z-index: 10001; display: none;">
+        <div class="modal-content" style="max-width: 420px; text-align: center; padding: 40px; border-radius: 12px;">
+            <div style="margin-bottom: 20px; display: flex; justify-content: center;">
+                <div
+                    style="width: 80px; height: 80px; border-radius: 50%; background: #fef9c3; display: flex; align-items: center; justify-content: center;">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                        </path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                </div>
+            </div>
+            <h2 style="margin-bottom: 15px; color: #111827;">Payment Required</h2>
+            <p style="color: #6B7280; margin-bottom: 25px; line-height: 1.5; font-size: 14px;">This student has an
+                unpaid fee for this class session. Would you like to collect the payment now?</p>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button onclick="dismissUnpaidAlertModal()"
+                    style="padding: 10px 20px; border: 1px solid #E5E7EB; background: white; border-radius: 4px; cursor: pointer; color: #374151; font-weight: 500;">Dismiss</button>
+                <button id="unpaidAlertPayBtn"
+                    style="padding: 10px 20px; background: #00952d; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 500;">Pay
+                    Now</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Unpaid & Checked Out Modal -->
+    <div id="unpaidCheckedOutModal" class="modal" style="z-index: 10002; display: none;">
+        <div class="modal-content" style="max-width: 500px; padding: 25px; border-radius: 12px;">
+            <div class="modal-header" style="border-bottom: 1px solid #e5e7eb; padding-bottom: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="color: #dc2626; display: flex; align-items: center; gap: 10px; margin: 0; font-size: 18px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    Unpaid & Checked Out Students
+                </h2>
+                <span class="close-btn" onclick="closeUnpaidCheckedOutModal()" style="font-size: 24px; cursor: pointer;">&times;</span>
+            </div>
+            <div id="unpaidCheckedOutList" style="display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto; padding-right: 5px;"></div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="./assets/js/attendance.js"></script>
+    <script type="module" src="./assets/js/application_config.js"></script>
+</body>
+
+</html>

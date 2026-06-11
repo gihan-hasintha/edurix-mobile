@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Settings - Edurix</title>
+    <link rel="stylesheet" href="./assets/css/sub_nav_style.css">
+    <link rel="stylesheet" href="./assets/css/setting.css">
+<script type="module" src="./assets/js/env.js"></script>
+</head>
+
+<body>
+    <!-- Global Header Navbar -->
+    <div id="navbar">
+        <div class="navbar-for-application">
+            <div class="navbar-for-application-content">
+                <div class="navbar-for-application-content-left">
+                    <div class="navbar-for-application-content-left-back" onclick="window.history.back()" style="cursor:pointer; margin-right:15px; display:flex; align-items:center; color:#fff;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                    </div>
+                    <div class="navbar-for-application-content-left-logo">
+                        <img src="./assets/img/logo.png" alt="Edurix">
+                    </div><span class="nav-separator"> - </span><div id="navbar-for-application-content-left-school-name">Loading...</div><span class="nav-separator"> - </span><div id="navbar-for-application-content-left-school-name-page-name">Teacher Settings</div>
+                </div>
+                <div class="navbar-for-application-content-righ">
+                    <div class="navbar-for-application-content-righ-icons">
+                        <a title="Back" onclick="history.back()">
+                            <div class="navbar-for-application-content-righ-icons-for-link" style="margin-top: 6px;">
+                                <img src="./assets/img/back.png" alt="Back">
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="navbar-space"></div>
+    </div>
+
+    <!-- Page Loading State Overlay -->
+    <div id="pageLoader" class="page-loader-overlay">
+        <div class="spinner"></div>
+        <p style="color: var(--text-secondary); font-size: 14px; font-weight: 500;">Loading teacher configurations...
+        </p>
+    </div>
+
+    <!-- Dashboard App Container -->
+    <div class="dashboard-container">
+
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="profile-section">
+                <div id="avatarInitials" class="avatar-wrapper">--</div>
+                <div id="sidebarTeacherName" class="teacher-name-title">Loading...</div>
+                <div class="teacher-role-badge">Faculty Account</div>
+                <span id="teacherStatusBadge" class="status-badge status-active">Active</span>
+            </div>
+
+            <nav class="sidebar-menu">
+                <button class="menu-item active" data-tab="account">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    Account Settings
+                </button>
+                <button class="menu-item" data-tab="billing">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
+                        <line x1="12" y1="10" x2="12" y2="10"></line>
+                        <line x1="12" y1="14" x2="12" y2="14"></line>
+                    </svg>
+                    Billing Settings
+                </button>
+                <button class="menu-item" data-tab="access">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    System Access
+                </button>
+                <button class="menu-item" data-tab="hotlines">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
+                        </path>
+                    </svg>
+                    Hotline Settings
+                </button>
+                <button class="menu-item" data-tab="security">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    System Users
+                </button>
+                <button class="menu-item" data-tab="sms">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    SMS Settings
+                </button>
+                <button class="menu-item" data-tab="session">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Session Section
+                </button>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+
+            <!-- Account Settings Section -->
+            <section id="tab-account" class="settings-section-container active">
+                <div class="section-header">
+                    <h1>Account Settings</h1>
+                    <p>Manage your public profile details and main contact information.</p>
+                </div>
+                <div class="glass-card">
+                    <form id="accountForm" class="form-grid">
+                        <div class="form-group">
+                            <label for="teacherName">Teacher Name</label>
+                            <input type="text" id="teacherName" placeholder="Enter teacher name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="mainPhoneNumber">Main Phone Number</label>
+                            <input type="text" id="mainPhoneNumber" placeholder="Enter phone number">
+                        </div>
+                        <div class="form-group">
+                            <label for="teacherIdDisplay">Teacher ID</label>
+                            <input type="text" id="teacherIdDisplay" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="teacherShortcodeDisplay">Teacher Shortcode</label>
+                            <input type="text" id="teacherShortcodeDisplay" disabled>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="teacherAddress">Address</label>
+                            <textarea id="teacherAddress" rows="3" placeholder="Enter street address"></textarea>
+                        </div>
+                        <div class="form-group full-width btn-container">
+                            <button type="submit" class="btn btn-primary" id="saveAccountBtn">
+                                <span>Save Changes</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Billing Settings Section -->
+            <section id="tab-billing" class="settings-section-container">
+                <div class="section-header">
+                    <h1>Billing & Payments</h1>
+                    <p>Monitor class subscription rates, payment statuses, and next due date details.</p>
+                </div>
+                <div class="glass-card">
+                    <form id="billingForm" class="form-grid">
+                        <div class="form-group">
+                            <label for="monthlyFee">Monthly Fee (LKR)</label>
+                            <input type="number" id="monthlyFee" placeholder="0.00" min="0" step="0.01" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="paymentStatus">Payment Status</label>
+                            <input type="text" id="paymentStatus" disabled
+                                style="font-weight: 600; text-transform: uppercase;">
+                        </div>
+                        <div class="form-group">
+                            <label for="nextPaymentDue">Next Payment Due</label>
+                            <input type="date" id="nextPaymentDue" disabled>
+                        </div>
+                        <div class="form-group full-width btn-container">
+                            <button type="submit" class="btn btn-primary" id="saveBillingBtn">
+                                <span>Save Billing</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- System Access Section -->
+            <section id="tab-access" class="settings-section-container">
+                <div class="section-header">
+                    <h1>System Access</h1>
+                    <p>Configure security visibility, software status keys, and workspace status.</p>
+                </div>
+                <div class="glass-card">
+                    <div class="toggle-item">
+                        <div class="toggle-details">
+                            <span class="toggle-title">Active Status Toggle</span>
+                            <span class="toggle-desc">Toggle the status of this teacher within the registration
+                                panel.</span>
+                        </div>
+                        <label class="switch" disabled>
+                            <input type="checkbox" id="activeToggle" disabled>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="toggle-item">
+                        <div class="toggle-details">
+                            <span class="toggle-title">Account Enabled Toggle</span>
+                            <span class="toggle-desc">Temporarily disable or enable general access control.</span>
+                        </div>
+                        <label class="switch" disabled>
+                            <input type="checkbox" id="enabledToggle" disabled>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="toggle-item">
+                        <div class="toggle-details">
+                            <span class="toggle-title">Show TeacherKEY Visibility</span>
+                            <span class="toggle-desc">Unhide or conceal your unique license access key in the security
+                                panel.</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="keyVisibilityToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <!-- TeacherKEY Display Panel -->
+                    <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-color);">
+                        <label style="display: block; margin-bottom: 8px;">Teacher Access KEY</label>
+                        <div class="key-container">
+                            <span id="teacherKeyDisplay" class="key-text">••••••••••••••••••••••••••••••</span>
+                            <button class="icon-btn" id="copyKeyBtn" title="Copy Key">
+                                <svg viewBox="0 0 24 24">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Hotline Settings Section -->
+            <section id="tab-hotlines" class="settings-section-container">
+                <div class="section-header">
+                    <h1>Hotline Settings</h1>
+                    <p>Configure dynamic contact lines displayed for student assistance and administration queries.</p>
+                </div>
+                <div class="glass-card">
+                    <div id="hotlinesListContainer" style="margin-bottom: 20px;">
+                        <!-- Hotline entries will be generated here -->
+                    </div>
+                    <button class="btn btn-secondary" id="addHotlineRowBtn"
+                        style="width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px;">
+                        <svg viewBox="0 0 24 24"
+                            style="width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2;">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Add New Hotline
+                    </button>
+                    <div class="btn-container"
+                        style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+                        <button class="btn btn-primary" id="saveHotlinesBtn">
+                            <span>Save Hotlines</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- System Users Section -->
+            <section id="tab-security" class="settings-section-container">
+                <div class="section-header">
+                    <h1>System Users</h1>
+                    <p>Manage system users, login PINs, and access credentials for your account.</p>
+                </div>
+                <div class="glass-card" style="display: flex; flex-direction: column; gap: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);">
+                        <span style="font-size: 16px; font-weight: 600; color: var(--text-primary);">Authorized Users</span>
+                        <button class="btn btn-primary" id="addSystemUserBtn" style="padding: 8px 16px; font-size: 13px;">
+                            <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.5; margin-right: 4px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            Add System User
+                        </button>
+                    </div>
+
+                    <div style="overflow-x: auto; width: 100%;">
+                        <table class="system-users-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
+                            <thead>
+                                <tr style="border-bottom: 2px solid var(--border-color); color: var(--text-secondary); font-weight: 600;">
+                                    <th style="padding: 12px 8px;">User ID</th>
+                                    <th style="padding: 12px 8px;">Name</th>
+                                    <th style="padding: 12px 8px;">Phone Number</th>
+                                    <th style="padding: 12px 8px;">Role</th>
+                                    <th style="padding: 12px 8px;">PIN</th>
+                                    <th style="padding: 12px 8px; text-align: right;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="systemUsersTableBody">
+                                <!-- Dynamic rows go here -->
+                                <tr>
+                                    <td colspan="5" style="text-align: center; padding: 24px; color: var(--text-secondary);">Loading system users...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SMS Settings Section -->
+            <section id="tab-sms" class="settings-section-container">
+                <div class="section-header">
+                    <h1>SMS Configurations</h1>
+                    <p>Configure SMS API Gateway URL and sender credentials.</p>
+                </div>
+                <div class="glass-card">
+                    <form id="smsForm" class="form-grid">
+                        <div class="form-group full-width">
+                            <label for="smsApi">SMS API Gateway URL</label>
+                            <input type="text" id="smsApi" placeholder="Enter SMS gateway HTTP API endpoint URL">
+                        </div>
+                        <div class="form-group">
+                            <label for="smsSenderId">SMS Sender ID</label>
+                            <input type="text" id="smsSenderId" placeholder="Enter custom Sender ID">
+                        </div>
+                        <div class="form-group">
+                            <label for="mainSms">SMS Service</label>
+                            <select id="mainSms">
+                                <option value="on">Enabled</option>
+                                <option value="off">Disabled</option>
+                            </select>
+                        </div>
+
+                        <!-- SMS Alert Toggles -->
+                        <div id="smsTriggersSection" class="form-group full-width" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color);">
+                            <span style="font-size: 14px; font-weight: 600; color: var(--text-primary); display: block; margin-bottom: 12px;">Automatic SMS Triggers</span>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div style="display: flex; flex-direction: column; gap: 2px;">
+                                        <span style="font-size: 13px; font-weight: 600;">Welcome SMS</span>
+                                        <span style="font-size: 11px; color: var(--text-secondary);">Send welcoming SMS on student registration.</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="welcomeSmsToggle">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div style="display: flex; flex-direction: column; gap: 2px;">
+                                        <span style="font-size: 13px; font-weight: 600;">Payment SMS</span>
+                                        <span style="font-size: 11px; color: var(--text-secondary);">Send alert on invoice creation and payment.</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="paymentSmsToggle">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div style="display: flex; flex-direction: column; gap: 2px;">
+                                        <span style="font-size: 13px; font-weight: 600;">In SMS (Check-In)</span>
+                                        <span style="font-size: 11px; color: var(--text-secondary);">Send alert when student enters premises.</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="inSmsToggle">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div style="display: flex; flex-direction: column; gap: 2px;">
+                                        <span style="font-size: 13px; font-weight: 600;">Out SMS (Check-Out)</span>
+                                        <span style="font-size: 11px; color: var(--text-secondary);">Send alert when student leaves premises.</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="outSmsToggle">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group full-width btn-container">
+                            <button type="submit" class="btn btn-primary" id="saveSmsBtn">
+                                <span>Save SMS Settings</span>
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </section>
+
+            <!-- Session Section Section -->
+            <section id="tab-session" class="settings-section-container">
+                <div class="section-header">
+                    <h1>Session Management</h1>
+                    <p>Manage your current logged-in workspace and login sessions.</p>
+                </div>
+                <div class="glass-card" style="display: flex; flex-direction: column; gap: 20px;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 16px; border-bottom: 1px solid var(--border-color);">
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <span style="font-size: 15px; font-weight: 600;">Log Out of Session</span>
+                            <span style="font-size: 13px; color: var(--text-secondary);">Disconnects the current
+                                dashboard and requires license reactivation.</span>
+                        </div>
+                        <button class="btn btn-secondary" id="logoutBtn">
+                            <svg viewBox="0 0 24 24"
+                                style="width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2;">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            Log Out
+                        </button>
+                    </div>
+
+                    <div style="display: none; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <span style="font-size: 15px; font-weight: 600; color: var(--error);">Deactivate Faculty
+                                Account</span>
+                            <span style="font-size: 13px; color: var(--text-secondary);">Disables the profile within the
+                                system. You will lose access immediately.</span>
+                        </div>
+                        <button class="btn btn-danger" id="deactivateBtn">Deactivate Account</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Password info Modal -->
+    <div id="passwordModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Account Password Info</h3>
+                <button class="icon-btn close-modal-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>This student management system currently utilizes your unique <strong>Teacher Access KEY</strong> to
+                    secure, authenticate, and license your account.</p>
+                <p>There is no standard system password. To modify login credentials or re-verify security clearance,
+                    please regenerate your Teacher Access KEY under the Security tab or contact system administrators.
+                </p>
+            </div>
+            <div class="btn-container">
+                <button class="btn btn-primary close-modal-btn">Got It</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Regenerate Key Confirmation Modal -->
+    <div id="regenKeyModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 style="color: var(--warning);">Confirm Key Regeneration?</h3>
+                <button class="icon-btn close-modal-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to regenerate your <strong>Teacher Access KEY</strong>?</p>
+                <p style="color: var(--error); font-weight: 600;">Warning: Any active client terminals, registers, or
+                    machines currently authenticated with your old Teacher Access KEY will be disconnected immediately
+                    and will require manual reactivation.</p>
+            </div>
+            <div class="btn-container">
+                <button class="btn btn-secondary close-modal-btn">Cancel</button>
+                <button class="btn btn-danger" id="confirmRegenKeyBtn">Regenerate</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deactivate Account Confirmation Modal -->
+    <div id="deactivateModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 style="color: var(--error);">Confirm Account Deactivation?</h3>
+                <button class="icon-btn close-modal-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to <strong>deactivate your teacher account</strong>?</p>
+                <p>This action will set your status to inactive, terminate the current session, and disable access to
+                    class records and registers.</p>
+                <p style="font-weight: 600;">You must contact system administration to reactivate your credentials.</p>
+            </div>
+            <div class="btn-container">
+                <button class="btn btn-secondary close-modal-btn">Cancel</button>
+                <button class="btn btn-danger" id="confirmDeactivateBtn">Deactivate Account</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit System User Modal -->
+    <div id="userModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="userModalTitle">Add System User</h3>
+                <button class="icon-btn close-modal-btn" id="closeUserModalBtn">&times;</button>
+            </div>
+            <form id="userForm">
+                <div class="modal-body" style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px;">
+                    <input type="hidden" id="modalUserId">
+                    <div class="form-group">
+                        <label for="modalSystemUserId">System User ID</label>
+                        <input type="text" id="modalSystemUserId" required placeholder="e.g. USR-1001">
+                    </div>
+                    <div class="form-group">
+                        <label for="modalUserName">User Name</label>
+                        <input type="text" id="modalUserName" required placeholder="Enter name">
+                    </div>
+                    <div class="form-group">
+                        <label for="modalUserPhoneNumber">Phone Number</label>
+                        <input type="text" id="modalUserPhoneNumber" required placeholder="Enter phone number">
+                    </div>
+                    <div class="form-group">
+                        <label for="modalUserRole">Role <span style="color:var(--error)">*</span></label>
+                        <select id="modalUserRole" required>
+                            <option value="">Select Role</option>
+                            <option value="Teacher">Teacher</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Staff">Staff</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="modalUserPin">PIN Code</label>
+                        <input type="text" id="modalUserPin" required placeholder="Enter login PIN code">
+                    </div>
+                </div>
+                <div class="btn-container">
+                    <button type="button" class="btn btn-secondary" id="cancelUserModalBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveUserModalBtn">Save User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete User Confirmation Modal -->
+    <div id="deleteUserModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 style="color: var(--error);">Delete System User?</h3>
+                <button class="icon-btn close-modal-btn" id="closeDeleteUserModalBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete system user <strong id="deleteUserName">Assistant</strong>?</p>
+                <p style="color: var(--error); font-weight: 600;">This action cannot be undone and their login access will be revoked immediately.</p>
+            </div>
+            <div class="btn-container">
+                <button class="btn btn-secondary" id="cancelDeleteUserModalBtn">Cancel</button>
+                <button class="btn btn-danger" id="confirmDeleteUserBtn">Delete User</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toasts Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script type="module" src="./assets/js/setting.js"></script>
+    <script type="module" src="./assets/js/application_config.js"></script>
+</body>
+
+</html>

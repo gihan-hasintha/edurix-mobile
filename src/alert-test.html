@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Alert Test</title>
+
+<script type="module" src="./assets/js/env.js"></script>
+</head>
+
+<body>
+
+    <h1>Custom Alert Testing Page</h1>
+    <p>Click the buttons below to trigger native <code>alert()</code> calls. They will be automatically intercepted by
+        our new custom UI!</p>
+
+    <div class="btn-container">
+        <!-- The script detects 'failed', 'error', 'invalid', 'cannot', 'coming soon' automatically -->
+
+        <button class="btn btn-success"
+            onclick="alert('Student has been successfully registered and enrolled in class.')">
+            Test Success Alert
+        </button>
+
+        <button class="btn btn-error" onclick="alert('Failed to connect to the database. Please try again.')">
+            Test Error Alert
+        </button>
+
+        <button class="btn btn-info" onclick="alert('Payment history feature coming soon!')">
+            Test 'Coming Soon' Alert
+        </button>
+    </div>
+
+    <!-- This will inject the custom alert logic globally just like in the real app -->
+    <script type="module" src="./assets/js/application_config.js"></script>
+</body>
+
+</html>
