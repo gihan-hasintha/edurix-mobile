@@ -244,7 +244,8 @@ function processStudentData() {
 }
 
 function renderPaymentUI() {
-    document.getElementById('view-payment').style.display = 'flex';
+    document.getElementById('view-payment').style.display = 'block';
+    document.getElementById('bottomSummaryBar').style.display = 'flex';
     
     const photo = currentStudent.student_photo || './assets/img/student-blank-image.jpg';
     document.getElementById('studentPhoto').style.backgroundImage = `url('${photo}')`;
@@ -276,50 +277,56 @@ function renderPaymentUI() {
         upcomingList.forEach(item => {
             const timeStart = item.cls.classtime || '00:00';
             const timeEnd = item.cls.class_endtime || '00:00';
+            const fmtFee = item.fee.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             
             mainContainer.innerHTML += `
-                <div class="outstanding-item" style="border-color: #e0e7ff; background: #fafbff; flex-direction: row; align-items: center; gap: 16px; transition: opacity 0.2s;">
-                    <div>
-                        <input type="checkbox" class="upcoming-checkbox" data-class-id="${item.cls.id}" data-fee="${item.fee}" checked onchange="updateUpcomingSelection()" style="width: 20px; height: 20px; cursor: pointer;">
-                    </div>
-                    <div style="flex: 1;">
-                        <div class="out-top" style="margin-bottom: 8px;">
-                            <h4 style="color: #4f46e5; margin: 0; font-size: 16px;">${item.cls.name}</h4>
-                            <div class="out-amount" style="color: #1e293b; display: flex; align-items: center;">
-                                <span class="calc-text" style="font-size: 13px; color: #64748b; font-weight: 500; margin-right: 8px;">LKR ${item.fee} x 1 day =</span>
-                                <span class="total-text" style="font-size: 18px; font-weight: 700;">LKR ${item.fee.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                <div class="class-item-card">
+                    <div class="class-item-top">
+                        <div class="class-checkbox-wrap">
+                            <input type="checkbox" class="class-checkbox upcoming-checkbox"
+                                data-class-id="${item.cls.id}" data-fee="${item.fee}"
+                                onchange="updateUpcomingSelection()">
+                        </div>
+                        <div class="class-title-price">
+                            <span class="class-name">${item.cls.name}</span>
+                            <div class="class-price-col">
+                                <span class="class-calc-text">LKR ${item.fee} &times; 1 day</span>
+                                <span class="class-total-price total-text">LKR ${fmtFee}</span>
                             </div>
                         </div>
-                        <div class="out-dotted-divider" style="border-top: 1px dashed #c7d2fe; margin-bottom: 8px;"></div>
-                        <div class="out-details" style="display: flex; justify-content: space-between; align-items: center; padding: 0;">
-                            <div style="display: flex; gap: 24px;">
-                                <div class="out-detail-col">
-                                    <div style="font-size: 11px; color: #94a3b8; margin-bottom: 2px;">Teacher</div>
-                                    <div style="font-size: 12px; color: #475569; display: flex; align-items: center; gap: 4px;">
-                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> 
-                                        ${teacherName}
-                                    </div>
-                                </div>
-                                <div class="out-detail-col">
-                                    <div style="font-size: 11px; color: #94a3b8; margin-bottom: 2px;">Time</div>
-                                    <div style="font-size: 12px; color: #475569; display: flex; align-items: center; gap: 4px;">
-                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> 
-                                        ${timeStart} - ${timeEnd}
-                                    </div>
+                    </div>
+                    <hr class="class-divider">
+                    <div class="class-item-bottom">
+                        <div class="class-meta-cols">
+                            <div class="class-meta-col">
+                                <div class="meta-label">Teacher</div>
+                                <div class="meta-value">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                    ${teacherName}
                                 </div>
                             </div>
-                            
-                            <div class="up-weeks-counter" style="margin-right: 0;">
-                                <button class="week-btn" onclick="changeDayCount(this, -1)">-</button>
-                                <span class="week-count" data-days="1" style="min-width: 50px; text-align: center;">1 Day</span>
-                                <button class="week-btn" onclick="changeDayCount(this, 1)">+</button>
+                            <div class="class-meta-col">
+                                <div class="meta-label">Time</div>
+                                <div class="meta-value">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                    ${timeStart} - ${timeEnd}
+                                </div>
                             </div>
+                        </div>
+                        <div class="day-counter">
+                            <button class="day-counter-btn" onclick="changeDayCount(this, -1)">-</button>
+                            <span class="day-counter-display week-count" data-days="1">1 Day</span>
+                            <button class="day-counter-btn" onclick="changeDayCount(this, 1)">+</button>
                         </div>
                     </div>
                 </div>
             `;
         });
     }
+
+    // Reset select-all button label on re-render
+    const selectAllBtn = document.getElementById('selectAllBtn');
+    if (selectAllBtn) selectAllBtn.textContent = 'Select All';
 
     // Call update to calculate total
     updateUpcomingSelection();
@@ -339,44 +346,63 @@ window.changeDayCount = function(btn, delta) {
     countSpan.setAttribute('data-days', currentDays);
     countSpan.textContent = currentDays + (currentDays === 1 ? ' Day' : ' Days');
     
-    const itemDiv = container.closest('.outstanding-item');
+    const itemDiv = container.closest('.class-item-card');
     const checkbox = itemDiv.querySelector('.upcoming-checkbox');
     checkbox.checked = true;
     
     updateUpcomingSelection();
 };
 
+window.selectAllClasses = function() {
+    const checkboxes = document.querySelectorAll('.upcoming-checkbox');
+    const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+    // Toggle: if all checked → uncheck all, otherwise check all
+    checkboxes.forEach(cb => { cb.checked = !allChecked; });
+    // Update button label
+    const btn = document.getElementById('selectAllBtn');
+    if (btn) btn.textContent = allChecked ? 'Select All' : 'Deselect All';
+    updateUpcomingSelection();
+};
+
 window.updateUpcomingSelection = function() {
     let totalDue = 0;
+    let selectedCount = 0;
     const checkboxes = document.querySelectorAll('.upcoming-checkbox');
     checkboxes.forEach(cb => {
-        const itemDiv = cb.closest('.outstanding-item');
+        const itemDiv = cb.closest('.class-item-card');
         const countSpan = itemDiv.querySelector('.week-count');
         const days = parseInt(countSpan.getAttribute('data-days')) || 1;
         const fee = parseFloat(cb.getAttribute('data-fee')) || 0;
         
-        const calcText = itemDiv.querySelector('.calc-text');
-        const totalText = itemDiv.querySelector('.total-text');
+        const calcTextEl = itemDiv.querySelector('.class-calc-text');
+        const totalTextEl = itemDiv.querySelector('.total-text');
         
         if (cb.checked) {
             const itemTotal = fee * days;
             totalDue += itemTotal;
-            calcText.textContent = `LKR ${fee} x ${days} day${days > 1 ? 's' : ''} =`;
-            totalText.textContent = `LKR ${itemTotal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-            calcText.style.display = 'inline';
-            itemDiv.style.opacity = '1';
+            selectedCount++;
+            if (calcTextEl) calcTextEl.textContent = `LKR ${fee} \u00d7 ${days} day${days > 1 ? 's' : ''}`;
+            if (totalTextEl) totalTextEl.textContent = `LKR ${itemTotal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            itemDiv.classList.remove('deselected');
         } else {
-            calcText.style.display = 'none';
-            totalText.textContent = `LKR ${fee.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-            itemDiv.style.opacity = '0.5';
+            if (calcTextEl) calcTextEl.textContent = `LKR ${fee} \u00d7 1 day`;
+            if (totalTextEl) totalTextEl.textContent = `LKR ${fee.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            itemDiv.classList.add('deselected');
         }
     });
     
-    document.getElementById('totalDueLabel').textContent = `LKR ${totalDue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+    const fmtTotal = totalDue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    document.getElementById('totalDueLabel').textContent = `LKR ${fmtTotal}`;
     document.getElementById('paymentAmountInput').value = totalDue.toFixed(2);
     
     const formAmountDueEl = document.getElementById('formAmountDue');
-    if (formAmountDueEl) formAmountDueEl.textContent = `LKR ${totalDue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+    if (formAmountDueEl) formAmountDueEl.textContent = `LKR ${fmtTotal}`;
+
+    // Update bottom bar
+    const countEl = document.getElementById('selectedCount');
+    const totalEl = document.getElementById('bottomTotalAmount');
+    if (countEl) countEl.textContent = selectedCount;
+    if (totalEl) totalEl.textContent = `LKR ${fmtTotal}`;
 };
 
 window.processPayment = async function() {
@@ -392,7 +418,7 @@ window.processPayment = async function() {
 
     const btn = document.getElementById('processPaymentBtn');
     btn.disabled = true;
-    btn.textContent = 'Processing...';
+    btn.innerHTML = 'Processing...';
 
     const payloads = [];
     const now = new Date().toISOString();
@@ -402,7 +428,7 @@ window.processPayment = async function() {
     document.querySelectorAll('.upcoming-checkbox:checked').forEach(cb => {
         const classId = cb.getAttribute('data-class-id');
         const fee = parseFloat(cb.getAttribute('data-fee')) || 0;
-        const countSpan = cb.closest('.outstanding-item').querySelector('.week-count');
+        const countSpan = cb.closest('.class-item-card').querySelector('.week-count');
         const days = parseInt(countSpan.getAttribute('data-days')) || 1;
         selectedItems.push({
             class_id: classId,
@@ -478,7 +504,7 @@ window.processPayment = async function() {
         showToast('danger', 'Error', 'Failed to save some or all payment records.');
     } finally {
         btn.disabled = false;
-        btn.textContent = 'Process Payment';
+        btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg> Process Payment`;
     }
 };
 
