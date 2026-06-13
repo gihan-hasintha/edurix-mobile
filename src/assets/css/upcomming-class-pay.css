@@ -5,7 +5,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
-    --primary-red: #E8001C;
+    --primary-red: #ff001e;
     --primary-red-hover: #c0001a;
     --primary-purple: #4F46E5;
     --primary-purple-light: #EEF2FF;
@@ -45,7 +45,7 @@ body {
     left: 0;
     right: 0;
     height: var(--navbar-h);
-    background: var(--primary-red);
+    background: red;
     display: flex;
     align-items: center;
     justify-content: space-between;

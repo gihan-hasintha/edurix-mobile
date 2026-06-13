@@ -1,8 +1,9 @@
 .classes-container {
     margin: 0 auto;
     width: 100%;
-    height: calc(100vh - 80px);
-    top: 80px;
+    height: calc(100vh - 145px);
+    /* Adjusted for new double-row filter height */
+    top: 145px;
     position: fixed;
     overflow-y: auto;
 }
@@ -279,7 +280,6 @@ td {
 
 .subnav-for-application {
     width: 100%;
-    height: 45px;
     position: fixed;
     top: 40px;
     left: 0;
@@ -291,7 +291,6 @@ td {
 .subnav-for-application-content {
     width: 98%;
     margin: 0 auto;
-    height: 45px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -645,4 +644,278 @@ td {
     border-radius: 20px;
     letter-spacing: 0.5px;
     text-transform: uppercase;
+}
+
+/* Mobile Class Card Styles */
+.mobile-classes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 15px;
+    padding-bottom: 30px;
+}
+
+.mobile-class-card {
+    background: #ffffff;
+    border: 1px solid #eef0f3;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+    position: relative;
+    /* For absolute positioning of the menu */
+}
+
+.card-main-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    /* Better for wrapping content */
+    gap: 10px;
+    flex-wrap: wrap;
+    /* Let items wrap naturally */
+}
+
+.card-left-section {
+    display: flex;
+    gap: 12px;
+    flex: 1;
+    min-width: 200px;
+}
+
+
+
+.card-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 140px;
+}
+
+.card-details h3 {
+    margin: 0 0 4px 0;
+    font-size: 15px;
+    color: #0f172a;
+    font-weight: 600;
+}
+
+.location-text {
+    margin: 0 0 6px 0;
+    font-size: 12px;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.day-pill {
+    font-size: 10px;
+    font-weight: 700;
+    color: #16a34a;
+    background: #dcfce7;
+    padding: 3px 8px;
+    border-radius: 10px;
+}
+
+.card-middle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 120px;
+}
+
+.time-block {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.time-pill {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 12px;
+}
+
+.time-pill.start {
+    background: #ffedd5;
+    color: #ea580c;
+}
+
+.time-pill.end {
+    background: #fce7f3;
+    color: #be185d;
+}
+
+.time-sep {
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.students-count {
+    color: #ef4444;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: underline;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.fee-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 80px;
+}
+
+.fee-amount {
+    font-size: 14px;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 4px;
+}
+
+.fee-type {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+.card-actions-bottom {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    padding-top: 15px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.btn-grid {
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    text-align: center;
+    transition: opacity 0.2s;
+}
+
+.btn-grid:hover {
+    opacity: 0.9;
+}
+
+.btn-edit {
+    background: #f59e0b;
+}
+
+.btn-view {
+    background: #3b82f6;
+}
+
+.btn-enroll {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.btn-delete {
+    background: #ef4444;
+}
+
+/* Mobile Filter Layout Styles */
+.mobile-filters-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 96%;
+    margin: 0 auto;
+}
+
+.mobile-search-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.search-container .mobile-search-input {
+    width: 100%;
+    padding: 10px 10px 10px 38px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    font-size: 14px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.mobile-filter-btn {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.mobile-dropdowns-row {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 2px;
+}
+
+.mobile-dropdowns-row::-webkit-scrollbar {
+    display: none;
+}
+
+.mobile-dropdowns-row {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.mobile-select-dropdown {
+    flex: 1;
+    min-width: 120px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    font-size: 13px;
+    background: #ffffff;
+    outline: none;
+    color: #334155;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23334155' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 28px;
+}
+
+/* Mobile Modal Form Overrides */
+.custom-modal {
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.custom-form {
+    overflow-y: auto;
+    padding-right: 5px;
+    max-height: calc(90vh - 140px);
+    /* Leave room for header and footer */
+}
+
+/* Stack form rows vertically */
+.custom-form .form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+/* Ensure each form-group takes full width */
+.custom-form .form-group {
+    width: 100%;
 }

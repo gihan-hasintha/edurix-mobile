@@ -68,18 +68,18 @@ async function fetchClasses() {
         }
     } catch (error) {
         console.error('Error fetching data:', error);
-        document.getElementById('classesTableBody').innerHTML = '<tr><td colspan="8" style="text-align: center; color: red;">Failed to load classes.</td></tr>';
+        document.getElementById('classesListContainer').innerHTML = '<div style="text-align: center; padding: 20px; color: red;">Failed to load classes.</div>';
     } finally {
         document.getElementById('loader').classList.add('hidden');
     }
 }
 
 function renderClasses(classes) {
-    const tableBody = document.getElementById('classesTableBody');
-    tableBody.innerHTML = '';
+    const listContainer = document.getElementById('classesListContainer');
+    listContainer.innerHTML = '';
 
     if (classes.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No classes found.</td></tr>';
+        listContainer.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">No classes found.</div>';
         return;
     }
 
@@ -87,40 +87,48 @@ function renderClasses(classes) {
         // Count enrolled students for this class
         const count = allEnrollments.filter(r => String(r.class_id) === String(cls.id)).length;
 
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td><strong>${cls.name || 'N/A'}</strong></td>
-            <td>${cls.location || 'N/A'}</td>
-            <td><span class="badge badge-weekday">${cls.classdate || 'N/A'}</span></td>
-            <td>
-                <span class="badge badge-time">${cls.classtime || 'N/A'}</span> - 
-                <span class="badge badge-time" style="background-color: #fce4ec; color: #c2185b;">${cls.class_endtime || 'N/A'}</span>
-            </td>
-            <td>
-                <span style="font-weight: bold; color: #e81a1aff; cursor: pointer; text-decoration: underline;" onclick="viewStudents('${cls.id}', '${cls.name}')">
-                    ${count} Students
-                </span>
-            </td>
-            <td>${cls.fee_amount ? parseFloat(cls.fee_amount).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}</td>
-            <td>${cls.payment_type || 'N/A'}</td>
-            <td>
-                <div style="display: flex; gap: 5px;">
-                    <button class="action-btn" style="background-color: #f59e0b; color: white;" onclick="openEditModal('${cls.id}')">
-                        Edit
-                    </button>
-                    <button class="action-btn" style="background-color: #1a73e8; color: white;" onclick="viewStudents('${cls.id}', '${cls.name}')">
-                        View
-                    </button>
-                    <button class="action-btn manage-students-btn" onclick="manageStudents('${cls.id}')">
-                        Enroll
-                    </button>
-                    <button class="action-btn" style="background-color: #ef4444; color: white;" onclick="deleteClass('${cls.id}')">
-                        Delete
-                    </button>
+        // Removed icon logic as requested
+
+        const card = document.createElement('div');
+        card.className = 'mobile-class-card';
+        card.innerHTML = `
+            <div class="card-main-content">
+                <div class="card-left-section">
+                    <div class="card-details">
+                        <h3>${cls.name || 'N/A'}</h3>
+                        <p class="location-text">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            ${cls.location || 'N/A'}
+                        </p>
+                        <div><span class="day-pill">${(cls.classdate || 'N/A').toUpperCase()}</span></div>
+                    </div>
                 </div>
-            </td>
+                
+                <div class="card-middle">
+                    <div class="time-block">
+                        <span class="time-pill start">${cls.classtime || 'N/A'}</span>
+                        <span class="time-sep">-</span>
+                        <span class="time-pill end">${cls.class_endtime || 'N/A'}</span>
+                    </div>
+                    <div class="students-count" onclick="viewStudents('${cls.id}', '${cls.name}')">
+                        ${count} Students
+                    </div>
+                </div>
+
+                <div class="fee-col">
+                    <div class="fee-amount">${cls.fee_amount ? parseFloat(cls.fee_amount).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}</div>
+                    <div class="fee-type">${cls.payment_type || 'N/A'}</div>
+                </div>
+            </div>
+            
+            <div class="card-actions-bottom">
+                <button class="btn-grid btn-edit" onclick="openEditModal('${cls.id}')">Edit</button>
+                <button class="btn-grid btn-view" onclick="viewStudents('${cls.id}', '${cls.name}')">View</button>
+                <button class="btn-grid btn-enroll" onclick="manageStudents('${cls.id}')">Enroll</button>
+                <button class="btn-grid btn-delete" onclick="deleteClass('${cls.id}')">Delete</button>
+            </div>
         `;
-        tableBody.appendChild(row);
+        listContainer.appendChild(card);
     });
 }
 
@@ -466,3 +474,14 @@ function updateCustomSelectDisplay(selectId, value) {
         }
     }
 }
+
+// Expose functions to global scope for HTML inline handlers
+window.openModal = openModal;
+if (typeof closeModal === 'function') window.closeModal = closeModal;
+window.viewStudents = viewStudents;
+window.closeViewModal = closeViewModal;
+window.manageStudents = manageStudents;
+if (typeof deleteClass === 'function') window.deleteClass = deleteClass;
+if (typeof openEditModal === 'function') window.openEditModal = openEditModal;
+window.toggleDropdown = toggleDropdown;
+window.selectOption = selectOption;

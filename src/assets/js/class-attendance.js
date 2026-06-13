@@ -111,18 +111,22 @@ async function fetchClassDetails() {
         if (!response.ok) throw new Error('Failed to fetch class');
         const cls = await response.json();
         
-        document.getElementById('className').textContent = cls.name || 'Unknown Class';
-        document.getElementById('classSchedule').textContent = `Schedule: ${cls.classdate || 'N/A'} (${cls.classtime || 'N/A'} - ${cls.class_endtime || 'N/A'})`;
+        const classNameEl = document.getElementById('className');
+        if (classNameEl) classNameEl.textContent = cls.name || 'Unknown Class';
+        
+        document.getElementById('classSchedule').innerHTML = `${cls.classdate || 'N/A'}<br><span style="font-size: 11px; font-weight: 500; color: #1a1a1a;">${cls.classtime || 'N/A'} - ${cls.class_endtime || 'N/A'}</span>`;
         const locElement = document.getElementById('classLocation');
         if(locElement) locElement.textContent = cls.location || 'N/A';
-        document.getElementById('classFee').textContent = `Fee: ${cls.fee_amount ? parseFloat(cls.fee_amount).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'} (${cls.payment_type || 'N/A'})`;
+        document.getElementById('classFee').innerHTML = `${cls.fee_amount ? parseFloat(cls.fee_amount).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}<br><span style="font-size: 11px; font-weight: 500; color: #666;">(${cls.payment_type || 'N/A'})</span>`;
     } catch (error) {
         console.error('Error fetching class details:', error);
-        document.getElementById('className').textContent = 'Error loading class';
-        document.getElementById('classSchedule').textContent = 'Schedule: N/A';
+        const classNameEl = document.getElementById('className');
+        if (classNameEl) classNameEl.textContent = 'Error loading class';
+        
+        document.getElementById('classSchedule').textContent = 'N/A';
         const locElement = document.getElementById('classLocation');
         if(locElement) locElement.textContent = 'N/A';
-        document.getElementById('classFee').textContent = 'Fee: N/A';
+        document.getElementById('classFee').textContent = 'N/A';
     }
 }
 
@@ -174,7 +178,8 @@ async function fetchEnrolledStudents() {
         filterSearch();
         
         document.getElementById('studentTotalHeader').textContent = `${enrolledStudentIds.size}`;
-        document.getElementById('enrolledBadgeCount').textContent = `${enrolledStudentIds.size} Students`;
+        if(document.getElementById('enrolledBadgeCount')) document.getElementById('enrolledBadgeCount').textContent = `${enrolledStudentIds.size} Students`;
+        if(document.getElementById('enrolledTabBadge')) document.getElementById('enrolledTabBadge').textContent = `${enrolledStudentIds.size}`;
     } catch (error) {
         console.error('Error fetching enrollment:', error);
     } finally {
@@ -304,7 +309,8 @@ function addStudent(studentId) {
     });
     renderEnrolledList();
     document.getElementById('studentTotalHeader').textContent = `${enrolledStudentIds.size}`;
-    document.getElementById('enrolledBadgeCount').textContent = `${enrolledStudentIds.size} Students`;
+    if(document.getElementById('enrolledBadgeCount')) document.getElementById('enrolledBadgeCount').textContent = `${enrolledStudentIds.size} Students`;
+    if(document.getElementById('enrolledTabBadge')) document.getElementById('enrolledTabBadge').textContent = `${enrolledStudentIds.size}`;
     filterSearch();
 
     // ── Queue the DB save so it never races with other rapid clicks ──
@@ -331,7 +337,8 @@ function addStudent(studentId) {
                 enrollmentRecords = enrollmentRecords.filter(r => r.id !== tempRecordId);
                 renderEnrolledList();
                 document.getElementById('studentTotalHeader').textContent = `${enrolledStudentIds.size}`;
-                document.getElementById('enrolledBadgeCount').textContent = `${enrolledStudentIds.size} Students`;
+                if(document.getElementById('enrolledBadgeCount')) document.getElementById('enrolledBadgeCount').textContent = `${enrolledStudentIds.size} Students`;
+                if(document.getElementById('enrolledTabBadge')) document.getElementById('enrolledTabBadge').textContent = `${enrolledStudentIds.size}`;
                 filterSearch();
                 console.error('Failed to enroll student – server returned error.');
             }
@@ -358,7 +365,8 @@ async function removeStudent(recordId) {
     enrollmentRecords = enrollmentRecords.filter(r => String(r.id) !== String(recordId));
     renderEnrolledList();
     document.getElementById('studentTotalHeader').textContent = `${enrolledStudentIds.size}`;
-    document.getElementById('enrolledBadgeCount').textContent = `${enrolledStudentIds.size} Students`;
+    if(document.getElementById('enrolledBadgeCount')) document.getElementById('enrolledBadgeCount').textContent = `${enrolledStudentIds.size} Students`;
+    if(document.getElementById('enrolledTabBadge')) document.getElementById('enrolledTabBadge').textContent = `${enrolledStudentIds.size}`;
     filterSearch();
 
     // ── Queue the DB delete ──
@@ -374,7 +382,8 @@ async function removeStudent(recordId) {
                 enrollmentRecords.push(record);
                 renderEnrolledList();
                 document.getElementById('studentTotalHeader').textContent = `${enrolledStudentIds.size}`;
-                document.getElementById('enrolledBadgeCount').textContent = `${enrolledStudentIds.size} Students`;
+                if(document.getElementById('enrolledBadgeCount')) document.getElementById('enrolledBadgeCount').textContent = `${enrolledStudentIds.size} Students`;
+                if(document.getElementById('enrolledTabBadge')) document.getElementById('enrolledTabBadge').textContent = `${enrolledStudentIds.size}`;
                 filterSearch();
                 console.error('Failed to remove student – server returned error.');
             }
@@ -427,6 +436,12 @@ function exportEnrolledList(e) {
     document.body.removeChild(link);
 }
 
+window.addStudent = addStudent;
+window.removeStudent = removeStudent;
+window.editCurrentClass = editCurrentClass;
+window.viewAllStudents = viewAllStudents;
+window.exportEnrolledList = exportEnrolledList;
+
 init();
 
 window.scancardfunbt = function() {
@@ -464,3 +479,34 @@ if (nfcInputObj) {
         }
     });
 }
+
+window.switchTab = function(tabId) {
+    const enrollNewContent = document.getElementById('enrollNewContent');
+    const enrolledContent = document.getElementById('enrolledStudentsContent');
+    
+    if (enrollNewContent) {
+        enrollNewContent.classList.remove('active-tab-content');
+        enrollNewContent.style.display = 'none';
+    }
+    if (enrolledContent) {
+        enrolledContent.classList.remove('active-tab-content');
+        enrolledContent.style.display = 'none';
+    }
+    
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    
+    const targetContent = document.getElementById(tabId + 'Content');
+    if (targetContent) {
+        targetContent.classList.add('active-tab-content');
+        targetContent.style.display = 'flex';
+    }
+    
+    const buttons = document.querySelectorAll('.tab-btn');
+    if (buttons.length >= 2) {
+        if (tabId === 'enrollNew') {
+            buttons[0].classList.add('active');
+        } else {
+            buttons[1].classList.add('active');
+        }
+    }
+};

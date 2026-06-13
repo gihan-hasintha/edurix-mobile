@@ -156,27 +156,41 @@ function navigateWeek(direction) {
 function renderTimetableList(classes) {
     const grid = document.getElementById('timetableGrid');
     grid.innerHTML = '';
+    
+    // Change grid to vertical stacking for mobile list
+    grid.style.display = 'flex';
+    grid.style.flexDirection = 'column';
+    grid.style.overflowX = 'hidden';
 
     const weekDates = getWeekDates();
 
     daysOfWeek.forEach(day => {
         const { label, iso } = weekDates[day];
-        const holiday = holidayMap.get(iso); // undefined if not a holiday
+        const holiday = holidayMap.get(iso);
 
         const column = document.createElement('div');
-        column.className = 'day-column' + (holiday ? ' holiday-day' : '');
+        column.className = 'accordion-day-container' + (holiday ? ' holiday-day' : '');
         column.setAttribute('data-day', day);
 
         const header = document.createElement('div');
-        header.className = 'day-header';
+        header.className = 'accordion-day-header';
+        header.onclick = () => window.toggleAccordion(day);
+        
         header.innerHTML = `
-            ${day}
-            <span class="day-date">${label}</span>
-            ${holiday ? `<span class="holiday-banner">${holiday}</span>` : ''}
+            <div class="accordion-header-left">
+                <span class="day-name">${day}</span>
+                <span class="day-date">${label}</span>
+                ${holiday ? `<span class="holiday-banner">${holiday}</span>` : ''}
+            </div>
+            <svg id="day-icon-${day}" class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
         `;
 
         const content = document.createElement('div');
-        content.className = 'day-content';
+        content.className = 'accordion-day-content';
+        content.id = 'day-content-' + day;
+        content.style.display = 'flex'; // Expanded by default
 
         // Filter and sort classes for this day
         const dayClasses = classes
@@ -188,34 +202,15 @@ function renderTimetableList(classes) {
             });
 
         if (dayClasses.length === 0) {
-            if (holiday) {
-                content.innerHTML = `
-                    <div class="empty-day holiday-empty">
-                        <span class="holiday-no-class-icon"></span>
-                        Holiday
-                        <span class="empty-day-subtitle">${holiday}</span>
-                    </div>
-                `;
-            } else {
-                content.innerHTML = `
-                    <div class="empty-day">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                            <line x1="16" y1="2" x2="16" y2="6"></line>
-                            <line x1="8" y1="2" x2="8" y2="6"></line>
-                            <line x1="3" y1="10" x2="21" y2="10"></line>
-                            <line x1="8" y1="14" x2="16" y2="14"></line>
-                            <line x1="8" y1="18" x2="12" y2="18"></line>
-                        </svg>
-                        No classes
-                        <span class="empty-day-subtitle">Enjoy your day!</span>
-                    </div>
-                `;
-            }
+            content.innerHTML = `
+                <div class="empty-day-row">
+                    ${holiday ? `Holiday - ${holiday}` : 'No classes scheduled'}
+                </div>
+            `;
         } else {
             dayClasses.forEach(cls => {
                 const card = document.createElement('div');
-                card.className = 'class-card' + (holiday ? ' holiday-class-card' : '');
+                card.className = 'mobile-class-card' + (holiday ? ' holiday-class-card' : '');
                 
                 const startTime = formatTimeAMPM(cls.classtime);
                 const endTime = formatTimeAMPM(cls.class_endtime);
@@ -258,6 +253,9 @@ function renderTimetableGrid(classes) {
     calendarContainer.style.display = 'flex';
     calendarContainer.style.flexDirection = 'column';
     
+    const scrollWrapper = document.createElement('div');
+    scrollWrapper.className = 'calendar-scroll-wrapper';
+    
     // Headers
     const headersDiv = document.createElement('div');
     headersDiv.className = 'calendar-headers';
@@ -268,10 +266,10 @@ function renderTimetableGrid(classes) {
         const holiday = holidayMap.get(iso);
         const h = document.createElement('div');
         h.className = 'calendar-day-header' + (holiday ? ' holiday-day' : '');
-        h.innerHTML = `<div class="day-name">${day}</div><div class="day-date">${label}</div>${holiday ? `<div class="holiday-banner">${holiday}</div>` : ''}`;
+        h.innerHTML = `<div class="day-name">${day}</div><div class="day-date">${label}</div>${holiday ? `<div class="holiday-banner">${holiday}</span>` : ''}`;
         headersDiv.appendChild(h);
     });
-    calendarContainer.appendChild(headersDiv);
+    scrollWrapper.appendChild(headersDiv);
     
     // Grid View Container
     const viewContainer = document.createElement('div');
@@ -348,7 +346,8 @@ function renderTimetableGrid(classes) {
     });
     
     viewContainer.appendChild(columnsDiv);
-    calendarContainer.appendChild(viewContainer);
+    scrollWrapper.appendChild(viewContainer);
+    calendarContainer.appendChild(scrollWrapper);
     
     grid.innerHTML = '';
     grid.appendChild(calendarContainer);
@@ -433,4 +432,29 @@ loadHolidays().then(() => {
     syncDatePicker(); // set picker to current week's Monday
     fetchClasses();
 });
+
+// Window Exports for inline handlers
+window.navigateWeek = navigateWeek;
+window.syncDatePicker = syncDatePicker;
+window.applyFilters = applyFilters;
+window.selectedWeekDate = selectedWeekDate;
+
+window.setViewMode = function(mode) {
+    currentViewMode = mode;
+    document.getElementById('btnListView').classList.toggle('active', mode === 'list');
+    document.getElementById('btnGridView').classList.toggle('active', mode === 'grid');
+    applyFilters();
+};
+
+window.toggleAccordion = function(dayId) {
+    const content = document.getElementById('day-content-' + dayId);
+    const icon = document.getElementById('day-icon-' + dayId);
+    if (content.style.display === 'none') {
+        content.style.display = 'flex';
+        icon.style.transform = 'rotate(0deg)';
+    } else {
+        content.style.display = 'none';
+        icon.style.transform = 'rotate(180deg)';
+    }
+};
 

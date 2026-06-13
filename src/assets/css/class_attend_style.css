@@ -5,19 +5,26 @@ body {
     padding: 0;
 }
 
+.sticky-header-container {
+    position: sticky;
+    top: 40px;
+    /* Aligns right beneath the top navbar */
+    z-index: 100;
+    background: #ffffff;
+    /* To prevent background scrolling under the header */
+}
+
 .enrollment-header {
     background: #ffffff;
-    padding: 24px;
+    padding: 16px;
     border: 1px solid #eaeaea;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 
 .header-left-content {
     display: flex;
     align-items: center;
-    gap: 24px;
+    width: 100%;
 }
 
 .class-icon-box {
@@ -46,19 +53,26 @@ body {
 
 .class-meta-info {
     display: flex;
-    align-items: center;
-    gap: 32px;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 4px;
+    width: 100%;
 }
 
 .meta-item {
     display: flex;
-    align-items: center;
-    gap: 12px;
+    align-items: flex-start;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+    /* Allow shrinking */
+    justify-content: center;
 }
 
 .meta-icon {
     color: #da251d;
-    display: flex;
+    margin-top: 2px;
 }
 
 .meta-text {
@@ -67,21 +81,33 @@ body {
 }
 
 .meta-label {
-    font-size: 12px;
-    color: #777;
+    font-size: 10px;
+    color: #888;
     margin-bottom: 2px;
 }
 
 .meta-value {
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 700;
     color: #1a1a1a;
+    line-height: 1.3;
 }
 
 .meta-divider {
     width: 1px;
-    height: 30px;
     background-color: #eaeaea;
+    margin: 0 2px;
+    flex-shrink: 0;
+}
+
+.meta-item.bottom-item {
+    min-width: 0;
+    justify-content: center;
+    margin-top: 0;
+}
+
+.meta-divider.divider-bottom {
+    display: block;
 }
 
 .edit-class-btn {
@@ -112,13 +138,13 @@ body {
 }
 
 .section-icon svg {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
 }
 
 .meta-icon svg {
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
 }
 
 .search-icon svg {
@@ -132,17 +158,71 @@ body {
     color: #1a1a1a;
 }
 
-.enrollment-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+.enrollment-content {
+    display: block;
+    width: 100%;
 }
 
 .section-box {
     background: white;
     border: 1px solid #eaeaea;
-    display: flex;
+    border-radius: 0 0 12px 12px;
+    display: none;
+    /* hidden by default for tabs */
     flex-direction: column;
-    height: calc(100vh - 180px);
+    min-height: calc(100vh - 280px);
+}
+
+.section-box.active-tab-content {
+    display: flex;
+}
+
+/* Mobile Tabs Styles */
+.mobile-tabs {
+    display: flex;
+    background: #ffffff;
+    border: 1px solid #eaeaea;
+    border-bottom: none;
+}
+
+.tab-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tab-btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+.tab-btn.active {
+    color: #1a1a1a;
+    border-bottom-color: #da251d;
+}
+
+.tab-btn.active svg {
+    color: #da251d;
+}
+
+.tab-badge {
+    background: #fdf2f2;
+    color: #da251d;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
 }
 
 .section-header {
