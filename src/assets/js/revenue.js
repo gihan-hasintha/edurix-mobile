@@ -23,6 +23,7 @@ const X_API_KEY = '996de2d470a0f1e9794b7778e216c193258aac001b36813f9ad1d3f957cc7
 let allClasses = [];
 let allPayments = [];
 let allStudents = [];
+let allExpenses = [];
 let allAttendances = [];
 let tableTransactions = [];
 let currentPage = 1;
@@ -60,7 +61,7 @@ function isDateInRange(dStr) {
     return true;
 }
 
-let sparkTotalChart, sparkPaidChart, sparkPendingChart, sparkRefundChart;
+let sparkTotalChart, sparkPaidChart, sparkPendingChart, sparkRefundChart, sparkExpensesChart, sparkProfitChart;
 let mainTrendChart, classDonutChart;
 
 function getActivatedData() {
@@ -91,10 +92,11 @@ async function loadData() {
     }
 
     try {
-        const [classesRes, paymentsRes, studentsRes] = await Promise.all([
+        const [classesRes, paymentsRes, studentsRes, expensesRes] = await Promise.all([
             fetch(`${CLASSES_API}?teacher_id=${teacherId}`, { headers: { 'x-api-key': X_API_KEY } }),
             fetch(`${PAYMENTS_API}?teacher_id=${teacherId}`, { headers: { 'x-api-key': X_API_KEY } }),
-            fetch(`${STUDENTS_API}?teacher_id=${teacherId}`, { headers: { 'x-api-key': X_API_KEY } })
+            fetch(`${STUDENTS_API}?teacher_id=${teacherId}`, { headers: { 'x-api-key': X_API_KEY } }),
+            fetch(`${API_URL_BASE}/expenses?teacher_id=${teacherId}`, { headers: { 'x-api-key': X_API_KEY } })
         ]);
 
         if (classesRes.ok) {
@@ -113,6 +115,12 @@ async function loadData() {
         if (studentsRes.ok) {
             const data = await studentsRes.json();
             allStudents = Array.isArray(data) ? data : (data.items || []);
+        }
+
+        if (expensesRes && expensesRes.ok) {
+            const data = await expensesRes.json();
+            allExpenses = Array.isArray(data) ? data : (data.items || []);
+            allExpenses = allExpenses.filter(e => String(e.teacher_id) === String(teacherId));
         }
 
         // Fetch attendances for pending calculation
@@ -146,7 +154,9 @@ function processDashboard() {
         currTotal: 0, prevTotal: 0,
         currPaid: 0, prevPaid: 0,
         currPending: 0, prevPending: 0,
-        currRefund: 0, prevRefund: 0
+        currRefund: 0, prevRefund: 0,
+        currExpenses: 0, prevExpenses: 0,
+        currProfit: 0, prevProfit: 0
     };
 
     function checkDates(dStr) {
@@ -192,7 +202,7 @@ function processDashboard() {
 
     // Calculate Paid / Total
     allPayments.forEach(p => {
-        const { isCurr, isPrev } = checkDates(p.created || p.payment_date);
+        const { isCurr, isPrev } = checkDates(p.payment_date || p.created);
         const amount = parseFloat(p.amount || 0);
 
         if (p.status === 'Paid' || p.status === 'Partial') {
@@ -221,25 +231,33 @@ function processDashboard() {
             if (cls) {
                 const fee = parseFloat(cls.fee_amount || 0);
                 const { isCurr, isPrev } = checkDates(att.attendance_date);
-
                 if (isCurr) metrics.currPending += fee;
                 if (isPrev) metrics.prevPending += fee;
             }
         }
     });
 
-    // Update UI Cards
+    allExpenses.forEach(e => {
+        const { isCurr, isPrev } = checkDates(e.date || e.created);
+        const amount = parseFloat(e.amount || 0);
+        if (isCurr) metrics.currExpenses += amount;
+        if (isPrev) metrics.prevExpenses += amount;
+    });
+
+    metrics.currProfit = metrics.currTotal - metrics.currExpenses;
+    metrics.prevProfit = metrics.prevTotal - metrics.prevExpenses;
+
     updateCard('Total', metrics.currTotal, metrics.prevTotal);
     updateCard('Paid', metrics.currPaid, metrics.prevPaid);
     updateCard('Pending', metrics.currPending, metrics.prevPending);
     updateCard('Refund', metrics.currRefund, metrics.prevRefund);
+    updateCard('Expenses', metrics.currExpenses, metrics.prevExpenses);
+    updateCard('Profit', metrics.currProfit, metrics.prevProfit);
 
-    // Render Charts
     renderSparklines();
     renderTrendChart();
     renderDonutChart();
 
-    // Render Table
     tableTransactions = allPayments.filter(p => isDateInRange(p.created || p.payment_date));
     currentPage = 1;
     renderTable();
@@ -253,14 +271,10 @@ function updateCard(type, curr, prev) {
     valEl.textContent = `LKR ${curr.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
 
     let pct = 0;
-    if (prev > 0) {
-        pct = ((curr - prev) / prev) * 100;
-    } else if (curr > 0) {
-        pct = 100;
-    }
+    if (prev > 0) pct = ((curr - prev) / prev) * 100;
+    else if (curr > 0) pct = 100;
 
     const absPct = Math.abs(pct).toFixed(1);
-    
     let suffix = 'vs Prev Month';
     if (globalDateRange.type === 'today') suffix = 'vs Yesterday';
     else if (globalDateRange.type === 'this_week') suffix = 'vs Last Week';
@@ -269,36 +283,16 @@ function updateCard(type, curr, prev) {
     else if (globalDateRange.type === 'custom') suffix = 'Custom Range';
 
     if (globalDateRange.type === 'all' || globalDateRange.type === 'custom') {
-        if (trendEl.classList) {
-            trendEl.classList.remove('trend-up', 'trend-down');
-            trendEl.classList.add('trend-neutral');
-        } else {
-            trendEl.className = 'trend-neutral';
-        }
+        trendEl.className = 'trend-neutral';
         trendEl.innerHTML = globalDateRange.type === 'all' ? `All Time Revenue` : `Custom Range Revenue`;
     } else if (pct > 0) {
-        if (trendEl.classList) {
-            trendEl.classList.remove('trend-neutral', 'trend-down');
-            trendEl.classList.add('trend-up');
-        } else {
-            trendEl.className = 'trend-up';
-        }
+        trendEl.className = 'trend-up';
         trendEl.innerHTML = `↑ ${absPct}% ${suffix}`;
     } else if (pct < 0) {
-        if (trendEl.classList) {
-            trendEl.classList.remove('trend-up', 'trend-neutral');
-            trendEl.classList.add('trend-down');
-        } else {
-            trendEl.className = 'trend-down';
-        }
+        trendEl.className = 'trend-down';
         trendEl.innerHTML = `↓ ${absPct}% ${suffix}`;
     } else {
-        if (trendEl.classList) {
-            trendEl.classList.remove('trend-up', 'trend-down');
-            trendEl.classList.add('trend-neutral');
-        } else {
-            trendEl.className = 'trend-neutral';
-        }
+        trendEl.className = 'trend-neutral';
         trendEl.innerHTML = `= 0% ${suffix}`;
     }
 }
@@ -317,7 +311,7 @@ function renderSparklines() {
         return d.toLocaleDateString('en-CA');
     });
 
-    const sparkData = { Total: [0,0,0,0,0,0,0], Paid: [0,0,0,0,0,0,0], Pending: [0,0,0,0,0,0,0], Refund: [0,0,0,0,0,0,0] };
+    const sparkData = { Total: [0,0,0,0,0,0,0], Paid: [0,0,0,0,0,0,0], Pending: [0,0,0,0,0,0,0], Refund: [0,0,0,0,0,0,0], Expenses: [0,0,0,0,0,0,0], Profit: [0,0,0,0,0,0,0] };
 
     allPayments.forEach(p => {
         const dStr = new Date(p.created || p.payment_date).toLocaleDateString('en-CA');
@@ -348,6 +342,18 @@ function renderSparklines() {
         }
     });
 
+    allExpenses.forEach(e => {
+        const dStr = new Date(e.created || e.date).toLocaleDateString('en-CA');
+        const idx = last7Days.indexOf(dStr);
+        if (idx > -1) {
+            sparkData.Expenses[idx] += parseFloat(e.amount || 0);
+        }
+    });
+
+    for (let i = 0; i < 7; i++) {
+        sparkData.Profit[i] = sparkData.Total[i] - sparkData.Expenses[i];
+    }
+
     const createSpark = (id, color, instance, dataArray) => {
         const ctx = document.getElementById(id);
         if (instance) instance.destroy();
@@ -362,6 +368,8 @@ function renderSparklines() {
     sparkPaidChart = createSpark('sparkPaid', '#10b981', sparkPaidChart, sparkData.Paid);
     sparkPendingChart = createSpark('sparkPending', '#f97316', sparkPendingChart, sparkData.Pending);
     sparkRefundChart = createSpark('sparkRefund', '#a855f7', sparkRefundChart, sparkData.Refund);
+    sparkExpensesChart = createSpark('sparkExpenses', '#ef4444', sparkExpensesChart, sparkData.Expenses);
+    sparkProfitChart = createSpark('sparkProfit', '#22c55e', sparkProfitChart, sparkData.Profit);
 }
 
 function renderTrendChart() {
@@ -386,17 +394,12 @@ function renderTrendChart() {
     chartPayments.forEach(p => {
         if (p.status !== 'Paid' && p.status !== 'Partial') return;
         const d = new Date(p.created || p.payment_date);
-        let label;
-        if (mode === 'daily') {
-            label = d.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
-        } else {
-            label = d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-        }
+        let label = (mode === 'daily') ? d.toLocaleDateString('en-US', { day: 'numeric', month: 'short' }) : d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
         if (!groupedData[label]) groupedData[label] = 0;
         groupedData[label] += parseFloat(p.amount || 0);
     });
 
-    const labels = Object.keys(groupedData).reverse(); // Oldest first
+    const labels = Object.keys(groupedData).reverse();
     const dataPoints = Object.values(groupedData).reverse();
 
     if (labels.length === 0) {

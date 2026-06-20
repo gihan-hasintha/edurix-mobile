@@ -78,10 +78,11 @@ async function loadDashboardData() {
 
     try {
         // 1. Parallel REST fetches
-        const [classesRes, paymentsRes, studentsRes] = await Promise.all([
+        const [classesRes, paymentsRes, studentsRes, expensesRes] = await Promise.all([
             fetch(`${API_BASE}/classes?teacher_id=${teacherId}`, { headers: HEADERS }),
             fetch(`${API_BASE}/payments?teacher_id=${teacherId}`, { headers: HEADERS }),
-            fetch(`${API_BASE}/students?teacher_id=${teacherId}`, { headers: HEADERS })
+            fetch(`${API_BASE}/students?teacher_id=${teacherId}`, { headers: HEADERS }),
+            fetch(`${API_BASE}/expenses?teacher_id=${teacherId}`, { headers: HEADERS })
         ]);
 
         let allClasses  = [];
@@ -109,6 +110,14 @@ async function loadDashboardData() {
             );
         }
 
+        let allExpenses = [];
+        if (expensesRes && expensesRes.ok) {
+            const d = await expensesRes.json();
+            allExpenses = Array.isArray(d) ? d : (d.items || []);
+            // Optional: filter by teacherId if backend returns others, but usually query param handles it
+            allExpenses = allExpenses.filter(e => String(e.teacher_id) === String(teacherId));
+        }
+
         // 2. Firebase attendance
         let allAttendances = [];
         try {
@@ -126,9 +135,23 @@ async function loadDashboardData() {
 
         // 3. Render everything
         renderGreeting();
-        renderSummaryCards(allClasses, allPayments, allStudents, allAttendances);
+        renderSummaryCards(allClasses, allPayments, allStudents, allAttendances, allExpenses);
+        renderSparklines(allClasses, allPayments, allStudents, allAttendances, allExpenses);
         renderAlertBanners(allPayments, allAttendances, allClasses);
         renderRevenueChart(allPayments);
+
+        const revSelect = document.getElementById('revenueTrendSelect');
+        if (revSelect) {
+            // Remove old listeners by cloning
+            const newSelect = revSelect.cloneNode(true);
+            revSelect.parentNode.replaceChild(newSelect, revSelect);
+            newSelect.addEventListener('change', (e) => {
+                const days = parseInt(e.target.value);
+                const titleEl = document.getElementById('revenueTrendTitle');
+                if (titleEl) titleEl.textContent = `Revenue Trend (Last ${days} Days)`;
+                renderRevenueChart(allPayments, days);
+            });
+        }
         renderStudentChart(allStudents, allPayments, allAttendances, allClasses);
         renderTodaysClasses(allClasses);
         renderRecentPayments(allPayments, allStudents, allClasses);
@@ -164,24 +187,29 @@ function renderGreeting() {
 }
 
 // ── Summary Cards ──────────────────────────────────────────────────────────────
-function renderSummaryCards(classes, payments, students, attendances) {
-    const now = new Date();
-    const cm = now.getMonth(), cy = now.getFullYear();
-    const pm = new Date(cy, cm - 1, 1);
+function renderSummaryCards(classes, payments, students, attendances, expenses) {
+    const today = new Date();
+    // Use local date strings to match input format usually
+    const tzOffset = today.getTimezoneOffset() * 60000;
+    const localToday = new Date(today - tzOffset);
+    const todayStr = localToday.toISOString().split('T')[0];
+    
+    const yest = new Date(localToday);
+    yest.setDate(yest.getDate() - 1);
+    const yestStr = yest.toISOString().split('T')[0];
 
     // Total Students
     setText('dash-total-students', students.length.toLocaleString());
 
-    // New Registrations this month (for trend and card)
+    // New Registrations today
     const newRegs = students.filter(s => {
         if (!s.created_at && !s.created) return false;
-        const d = new Date(s.created_at || s.created);
-        return d.getMonth() === cm && d.getFullYear() === cy;
+        return (s.created_at || s.created).split('T')[0] === todayStr;
     });
 
     const studentTrendEl = document.getElementById('dash-students-trend');
     if (studentTrendEl) {
-        studentTrendEl.textContent = newRegs.length > 0 ? `↑ ${newRegs.length} this month` : 'Updated today';
+        studentTrendEl.textContent = newRegs.length > 0 ? `↑ ${newRegs.length} today` : 'Updated today';
         studentTrendEl.style.color = newRegs.length > 0 ? '#22c55e' : '#64748b';
     }
 
@@ -190,14 +218,14 @@ function renderSummaryCards(classes, payments, students, attendances) {
     const todayClasses = classes.filter(c => c.classdate === todayDay);
     setText('dash-today-classes', todayClasses.length.toLocaleString());
 
-    // Revenue this month vs prev month
+    // Revenue today vs yesterday
     let currRev = 0, prevRev = 0;
     payments.forEach(p => {
-        const d = new Date(p.created || p.payment_date);
+        const dStr = (p.payment_date || p.created || '').split('T')[0];
         const amt = parseFloat(p.amount || 0);
         if ((p.status === 'Paid' || p.status === 'Partial')) {
-            if (d.getMonth() === cm && d.getFullYear() === cy) currRev += amt;
-            if (d.getMonth() === pm.getMonth() && d.getFullYear() === pm.getFullYear()) prevRev += amt;
+            if (dStr === todayStr) currRev += amt;
+            if (dStr === yestStr) prevRev += amt;
         }
     });
     setText('dash-total-revenue', formatLKR(currRev));
@@ -205,18 +233,21 @@ function renderSummaryCards(classes, payments, students, attendances) {
     if (revTrend) {
         if (prevRev > 0) {
             const pct = (((currRev - prevRev) / prevRev) * 100).toFixed(1);
-            revTrend.textContent = `${pct >= 0 ? '↑' : '↓'} ${Math.abs(pct)}% vs last month`;
+            revTrend.textContent = `${pct >= 0 ? '↑' : '↓'} ${Math.abs(pct)}% vs yesterday`;
             revTrend.style.color = pct >= 0 ? '#22c55e' : '#ef4444';
         } else {
-            revTrend.textContent = currRev > 0 ? '↑ New this month' : 'No data';
+            revTrend.textContent = currRev > 0 ? '↑ New today' : 'No data';
+            revTrend.style.color = currRev > 0 ? '#22c55e' : '#64748b';
         }
     }
 
-    // Pending Fees
+    // Pending Fees Today
     let pendingAmt = 0;
     const pendingStudentIds = new Set();
     attendances.forEach(att => {
         if (!att.check_in_time) return;
+        if (att.attendance_date !== todayStr) return; // Only count today's pending fees
+        
         const paid = payments.find(p =>
             (String(p.attendance_id) === String(att.id) ||
              (String(p.class_id) === String(att.class_id) &&
@@ -235,20 +266,162 @@ function renderSummaryCards(classes, payments, students, attendances) {
     setText('dash-pending-fees', formatLKR(pendingAmt));
     setText('dash-pending-students', pendingStudentIds.size + ' Students');
 
-    // New Registrations this month (for trend and card)
+    // New Registrations today (for card)
     const newRegsEl = document.getElementById('dash-new-registrations');
     if (newRegsEl) {
-        newRegsEl.textContent = newRegs.length > 0 ? newRegs.length : students.length;
+        newRegsEl.textContent = newRegs.length.toLocaleString();
     }
     const newRegsSubEl = document.getElementById('dash-new-registrations-sub');
     if (newRegsSubEl) {
-        newRegsSubEl.textContent = newRegs.length > 0 ? 'This Month' : 'Total Students';
+        newRegsSubEl.textContent = 'Today';
+    }
+
+    // Expenses today vs yesterday
+    let currExp = 0, prevExp = 0;
+    (expenses || []).forEach(e => {
+        const dStr = (e.date || e.created || '').split('T')[0];
+        const amt = parseFloat(e.amount || 0);
+        if (dStr === todayStr) currExp += amt;
+        if (dStr === yestStr) prevExp += amt;
+    });
+    setText('dash-total-expenses', formatLKR(currExp));
+    const expTrend = document.getElementById('dash-expenses-trend');
+    if (expTrend) {
+        if (prevExp > 0) {
+            const pct = (((currExp - prevExp) / prevExp) * 100).toFixed(1);
+            expTrend.textContent = `${pct >= 0 ? '↑' : '↓'} ${Math.abs(pct)}% vs yesterday`;
+            expTrend.style.color = pct >= 0 ? '#ef4444' : '#22c55e'; // For expenses, UP is bad (red), DOWN is good (green)
+        } else {
+            expTrend.textContent = currExp > 0 ? '↑ New today' : 'No data';
+            expTrend.style.color = currExp > 0 ? '#ef4444' : '#64748b';
+        }
+    }
+
+    // Net Profit today vs yesterday
+    let currProfit = currRev - currExp;
+    let prevProfit = prevRev - prevExp;
+    setText('dash-net-profit', formatLKR(currProfit));
+    const profitTrend = document.getElementById('dash-profit-trend');
+    if (profitTrend) {
+        if (prevProfit !== 0) {
+            const pct = (((currProfit - prevProfit) / Math.abs(prevProfit)) * 100).toFixed(1);
+            profitTrend.textContent = `${pct >= 0 ? '↑' : '↓'} ${Math.abs(pct)}% vs yesterday`;
+            profitTrend.style.color = pct >= 0 ? '#22c55e' : '#ef4444';
+        } else {
+            profitTrend.textContent = currProfit > 0 ? '↑ New today' : 'No data';
+            profitTrend.style.color = currProfit > 0 ? '#22c55e' : '#64748b';
+        }
     }
 }
 
 function setText(id, val) {
     const el = document.getElementById(id);
     if (el) el.textContent = val;
+}
+
+let sparkDashStudentsChart, sparkDashClassesChart, sparkDashRevenueChart, sparkDashPendingChart, sparkDashNewRegChart, sparkDashExpensesChart, sparkDashProfitChart;
+
+function renderSparklines(classes, payments, students, attendances, expenses) {
+    const sparkOptions = {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        scales: { x: { display: false }, y: { display: false } },
+        elements: { point: { radius: 0 } }
+    };
+
+    const last7Days = Array.from({length: 7}, (_, i) => {
+        const d = new Date();
+        d.setDate(d.getDate() - (6 - i));
+        return d.toLocaleDateString('en-CA');
+    });
+
+    const dataObj = {
+        Students: [0,0,0,0,0,0,0],
+        Classes: [0,0,0,0,0,0,0],
+        Revenue: [0,0,0,0,0,0,0],
+        Pending: [0,0,0,0,0,0,0],
+        NewReg: [0,0,0,0,0,0,0],
+        Expenses: [0,0,0,0,0,0,0],
+        Profit: [0,0,0,0,0,0,0]
+    };
+
+    // New Registrations
+    students.forEach(s => {
+        const dStr = new Date(s.created_at || s.created || 0).toLocaleDateString('en-CA');
+        const idx = last7Days.indexOf(dStr);
+        if (idx > -1) dataObj.NewReg[idx]++;
+    });
+
+    // Cumulative Students
+    let currentTotal = students.length;
+    for (let i = 6; i >= 0; i--) {
+        dataObj.Students[i] = currentTotal;
+        currentTotal -= dataObj.NewReg[i];
+    }
+
+    // Classes
+    const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    last7Days.forEach((dStr, i) => {
+        const d = new Date(dStr);
+        const dName = dayNames[d.getDay()];
+        dataObj.Classes[i] = classes.filter(c => c.classdate === dName).length;
+    });
+
+    // Revenue
+    payments.forEach(p => {
+        const dStr = new Date(p.created || p.payment_date).toLocaleDateString('en-CA');
+        const idx = last7Days.indexOf(dStr);
+        if (idx > -1 && (p.status === 'Paid' || p.status === 'Partial')) {
+            dataObj.Revenue[idx] += parseFloat(p.amount || 0);
+        }
+    });
+
+    // Pending
+    attendances.forEach(att => {
+        if (!att.check_in_time) return;
+        const dStr = new Date(att.attendance_date).toLocaleDateString('en-CA');
+        const idx = last7Days.indexOf(dStr);
+        if (idx > -1) {
+            const paid = payments.find(p => (String(p.attendance_id) === String(att.id) || (String(p.class_id) === String(att.class_id) && p.payment_date === att.attendance_date && String(p.student_id) === String(att.student_id))) && p.status === 'Paid');
+            if (!paid) {
+                const cls = classes.find(c => String(c.id) === String(att.class_id));
+                if (cls) dataObj.Pending[idx] += parseFloat(cls.fee_amount || 0);
+            }
+        }
+    });
+
+    const createSpark = (id, color, instance, dataArray) => {
+        const ctx = document.getElementById(id);
+        if (!ctx) return instance;
+        if (instance) instance.destroy();
+        return new Chart(ctx, {
+            type: 'line',
+            data: { labels: last7Days, datasets: [{ data: dataArray, borderColor: color, borderWidth: 2, tension: 0.4 }] },
+            options: sparkOptions
+        });
+    };
+
+    // Expenses
+    (expenses || []).forEach(e => {
+        const dStr = new Date(e.created || e.date || 0).toLocaleDateString('en-CA');
+        const idx = last7Days.indexOf(dStr);
+        if (idx > -1) {
+            dataObj.Expenses[idx] += parseFloat(e.amount || 0);
+        }
+    });
+
+    // Profit
+    for (let i = 0; i < 7; i++) {
+        dataObj.Profit[i] = dataObj.Revenue[i] - dataObj.Expenses[i];
+    }
+
+    sparkDashStudentsChart = createSpark('sparkDashStudents', '#ef4444', sparkDashStudentsChart, dataObj.Students);
+    sparkDashClassesChart = createSpark('sparkDashClasses', '#3b82f6', sparkDashClassesChart, dataObj.Classes);
+    sparkDashRevenueChart = createSpark('sparkDashRevenue', '#22c55e', sparkDashRevenueChart, dataObj.Revenue);
+    sparkDashPendingChart = createSpark('sparkDashPending', '#f97316', sparkDashPendingChart, dataObj.Pending);
+    sparkDashNewRegChart = createSpark('sparkDashNewReg', '#a855f7', sparkDashNewRegChart, dataObj.NewReg);
+    sparkDashExpensesChart = createSpark('sparkDashExpenses', '#ef4444', sparkDashExpensesChart, dataObj.Expenses);
+    sparkDashProfitChart = createSpark('sparkDashProfit', '#22c55e', sparkDashProfitChart, dataObj.Profit);
 }
 
 // ── Alert Banners ─────────────────────────────────────────────────────────────
@@ -302,16 +475,16 @@ function renderAlertBanners(payments, attendances, classes) {
 }
 
 // ── Revenue Trend Chart ────────────────────────────────────────────────────────
-function renderRevenueChart(payments) {
+function renderRevenueChart(payments, daysCount = 30) {
     const ctx = document.getElementById('dashRevenueChart');
     if (!ctx) return;
     if (revenueChart) { revenueChart.destroy(); revenueChart = null; }
 
-    // Build last 30 days daily totals
+    // Build daily totals
     const days = [];
     const dayTotals = {};
     const now = new Date();
-    for (let i = 29; i >= 0; i--) {
+    for (let i = daysCount - 1; i >= 0; i--) {
         const d = new Date(now);
         d.setDate(now.getDate() - i);
         const key = d.toISOString().split('T')[0];
@@ -327,8 +500,9 @@ function renderRevenueChart(payments) {
         }
     });
 
-    // Show every ~5th label to avoid crowding
-    const labels = days.map((d, i) => (i % 5 === 0 || i === days.length - 1) ? d.label : '');
+    // Show every ~nth label to avoid crowding based on daysCount
+    const step = daysCount <= 7 ? 1 : (daysCount <= 14 ? 2 : 5);
+    const labels = days.map((d, i) => (i % step === 0 || i === days.length - 1) ? d.label : '');
     const data   = days.map(d => dayTotals[d.key]);
 
     const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 250);

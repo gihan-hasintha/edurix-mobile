@@ -160,6 +160,18 @@ if (roleDropdownWrapper) setupCustomDropdown(roleDropdownWrapper, loginRoleSelec
 if (userDropdownWrapper) setupCustomDropdown(userDropdownWrapper, loginUserSelect, userSelectedLabel);
 
 if (loginRoleSelect && loginUserSelect) {
+    loginUserSelect.addEventListener('change', () => {
+        const pwdInput = document.getElementById('loginPassword');
+        if (pwdInput) {
+            if (loginUserSelect.value) {
+                pwdInput.disabled = false;
+            } else {
+                pwdInput.disabled = true;
+                pwdInput.value = '';
+            }
+        }
+    });
+
     loginRoleSelect.addEventListener('change', async (e) => {
         const selectedRole = e.target.value;
         
@@ -167,6 +179,12 @@ if (loginRoleSelect && loginUserSelect) {
         loginUserSelect.innerHTML = '<option value="">Select your name</option>';
         if (userSelectedLabel) userSelectedLabel.textContent = 'Loading users...';
         if (userDropdownOptions) userDropdownOptions.innerHTML = '<div class="custom-dropdown-option" style="color:#9ca3af; pointer-events:none;">Loading users...</div>';
+        
+        const pwdInput = document.getElementById('loginPassword');
+        if (pwdInput) {
+            pwdInput.disabled = true;
+            pwdInput.value = '';
+        }
         
         if (!selectedRole) {
             if (userSelectedLabel) userSelectedLabel.textContent = 'Select your name';

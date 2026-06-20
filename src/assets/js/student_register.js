@@ -394,6 +394,7 @@ document.getElementById('assign_class').addEventListener('change', (e) => {
                 address: document.getElementById('address').value,
                 phone_number: document.getElementById('phone_number').value,
                 parent_name: document.getElementById('parent_name').value,
+                parent_id_number: Number(document.getElementById('parent_id_number').value),
                 parent_phone_number: document.getElementById('parent_phone_number').value,
                 birthday: document.getElementById('birthday').value,
                 student_photo: studentPhotoUrl,

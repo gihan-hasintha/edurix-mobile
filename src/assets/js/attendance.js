@@ -1,6 +1,6 @@
 // Core Attendance JavaScript - Edurix
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, updateDoc, doc, getDocs, query, where, limit, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, updateDoc, doc, getDocs, query, where, limit, orderBy, serverTimestamp, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDxKcVG-j6nzzw_M4oWeQMmsWX_8f_qm60",
@@ -53,6 +53,14 @@ let paymentSyncInterval = null; // Track payment sync interval
 let hasPromptedClassEnd = false; // Flag to ensure we only prompt once per class
 let manuallyEndedClassId = sessionStorage.getItem('manuallyEndedClassId') || null; // Track manually ended class across reloads
 let teacherSettings = null;
+
+function toggleViewNextClassesBtn(disabled) {
+    const btn = document.getElementById('viewNextClassesBtn');
+    if (!btn) return;
+    btn.disabled = disabled;
+    btn.style.opacity = disabled ? '0.5' : '1';
+    btn.style.cursor = disabled ? 'not-allowed' : 'pointer';
+}
 
 // Send Attendance SMS via text.lk
 async function sendAttendanceSMS(student, type, timeStr) {
@@ -288,6 +296,7 @@ async function initData() {
 
     try {
         document.getElementById('loading-window').style.display = 'block';
+        toggleViewNextClassesBtn(true);
 
         // Fetch classes, students, and enrollments in parallel
         // Optimization: added ?teacher_id= parameter to significantly reduce network payload
@@ -321,6 +330,23 @@ async function initData() {
             await autoStartClassCheck();
         }
         setInterval(autoStartClassCheck, 2000);
+
+        // Listen for remote manual class starts across devices
+        if (teacherId) {
+            onSnapshot(doc(db, 'teacher_active_classes', String(teacherId)), (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    if (data.class_id && (!activeClass || String(activeClass.id) !== String(data.class_id))) {
+                        // A new class was manually started on another device
+                        const remoteClass = allClasses.find(c => String(c.id) === String(data.class_id));
+                        if (remoteClass) {
+                            sessionStorage.setItem('manualClassId', data.class_id);
+                            handleClassChange(data.class_id, 'manual');
+                        }
+                    }
+                }
+            });
+        }
 
     } catch (err) {
         console.error('Initialization error:', err);
@@ -400,6 +426,7 @@ window.handleClassChange = async function(classId, mode = 'autostarted') {
 
     try {
         document.getElementById('loading-window').style.display = 'block';
+        toggleViewNextClassesBtn(true);
         
         const cls = allClasses.find(c => String(c.id) === String(classId));
         if (!cls) return;
@@ -450,9 +477,29 @@ window.handleClassChange = async function(classId, mode = 'autostarted') {
             limit(500)
         );
         
+        // Unsubscribe from previous attendance listener
+        if (window.attendanceUnsubscribe) {
+            window.attendanceUnsubscribe();
+        }
+
         // Fetch attendance check-ins, payments, and class enrollments in parallel for faster load times
-        const [querySnapshot, payRes, enrollmentsRes] = await Promise.all([
-            getDocs(q),
+        const [_, payRes, enrollmentsRes] = await Promise.all([
+            new Promise(resolve => {
+                let initial = true;
+                window.attendanceUnsubscribe = onSnapshot(q, (snapshot) => {
+                    let allAttRecords = [];
+                    snapshot.forEach((docSnap) => {
+                        allAttRecords.push({ id: docSnap.id, ...docSnap.data() });
+                    });
+                    todayAttendance = allAttRecords;
+                    if (initial) {
+                        initial = false;
+                        resolve();
+                    } else {
+                        renderRoster();
+                    }
+                });
+            }),
             fetch(`${PAYMENTS_API}?class_id=${classId}&payment_date=${todayDateStr}`, { headers: { 'x-api-key': X_API_KEY } }).catch(e => {
                 console.error('Failed to fetch today payments', e);
                 return { ok: false };
@@ -462,12 +509,6 @@ window.handleClassChange = async function(classId, mode = 'autostarted') {
                 return { ok: false };
             })
         ]);
-
-        let allAttRecords = [];
-        querySnapshot.forEach((docSnap) => {
-            allAttRecords.push({ id: docSnap.id, ...docSnap.data() });
-        });
-        todayAttendance = allAttRecords;
 
         if (payRes && payRes.ok) {
             try {
@@ -497,6 +538,7 @@ window.handleClassChange = async function(classId, mode = 'autostarted') {
 
         renderRoster();
         focusNfcField();
+        toggleViewNextClassesBtn(false);
 
     } catch (err) {
         console.error('Error switching classes:', err);
@@ -750,6 +792,8 @@ function updateClassWidgetsEmpty() {
     const name = document.getElementById('activeClassName');
     const location = document.getElementById('activeClassLocation');
     const schedule = document.getElementById('activeClassSchedule');
+
+    toggleViewNextClassesBtn(true);
 
     if (detailsContainer) detailsContainer.style.display = 'flex';
     if (name) name.textContent = 'No Class Scheduled Now';
@@ -1268,6 +1312,23 @@ window.startUpcomingClass = function(classId) {
     sessionStorage.setItem('manualClassId', classId);
     handleClassChange(classId, 'manual');
     showToast('success', 'Class Started Manually', 'The selected class session has been started.');
+
+    // Broadcast manual start to other devices
+    const activatedData = localStorage.getItem('Activated_Teacher') || localStorage.getItem('Activated_Institution');
+    if (activatedData) {
+        try {
+            const stored = JSON.parse(activatedData);
+            const teacherId = stored.teacher_id || stored.institution_id;
+            if (teacherId) {
+                setDoc(doc(db, 'teacher_active_classes', String(teacherId)), {
+                    class_id: classId,
+                    updated_at: serverTimestamp()
+                }).catch(e => console.error('Error broadcasting manual class start:', e));
+            }
+        } catch (e) {
+            console.error('Error broadcasting manual class start:', e);
+        }
+    }
 };
 
 // Close modal on outside click

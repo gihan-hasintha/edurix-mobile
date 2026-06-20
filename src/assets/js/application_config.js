@@ -1,5 +1,11 @@
 // Inject custom alert globally
 (function() {
+    // Clear logged in user on new application session (effectively clearing on app close)
+    if (!sessionStorage.getItem('app_session_started')) {
+        localStorage.removeItem('LoggedInUser');
+        sessionStorage.setItem('app_session_started', 'true');
+    }
+
     if (!document.getElementById('custom-alert-script')) {
         const script = document.createElement('script');
         script.id = 'custom-alert-script';

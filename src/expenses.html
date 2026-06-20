@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Teacher Expenses - Edurix</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/sub_nav_style.css">
+    <link rel="stylesheet" href="./assets/css/revenue.css">
+    <link rel="stylesheet" href="./assets/css/expenses.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script type="module" src="./assets/js/env.js"></script>
+</head>
+
+<body>
+
+    <!-- App Navbar -->
+    <div id="navbar">
+        <div class="navbar-for-application">
+            <div class="navbar-for-application-content">
+                <div class="navbar-for-application-content-left">
+                    <div class="navbar-for-application-content-left-back" onclick="window.history.back()"
+                        style="cursor:pointer; margin-right:15px; display:flex; align-items:center; color:#fff;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                    </div>
+                    <div class="navbar-for-application-content-left-logo">
+                        <img src="./assets/img/logo.png" alt="">
+                    </div><span class="nav-separator"> - </span>
+                    <div id="navbar-for-application-content-left-school-name">Loading...</div><span class="nav-separator"> - </span>
+                    <div id="navbar-for-application-content-left-school-name-page-name">Teacher Expenses</div>
+                </div>
+                <div class="navbar-for-application-content-righ">
+                    <div class="navbar-for-application-content-righ-icons">
+                        <a title="Back" onclick="history.back()">
+                            <div class="navbar-for-application-content-righ-icons-for-link">
+                                <img src="./assets/img/back.png" alt="">
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="navbar-space"></div>
+    </div>
+
+    <div id="loader">
+        <svg style="width: 40px; height: 40px; animation: spin 1s linear infinite;" viewBox="0 0 24 24" fill="none"
+            stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 2a10 10 0 0 1 10 10"></path>
+        </svg>
+        <style>
+            @keyframes spin {
+                100% { transform: rotate(360deg); }
+            }
+        </style>
+    </div>
+
+    <div id="main-application">
+        <div class="revenue-layout hidden" id="mainContainer">
+
+            <!-- Header -->
+            <div class="page-header">
+                <div class="page-header-left">
+                    <h1>Teacher Expenses</h1>
+                    <p>Track your operational expenses.</p>
+                </div>
+                <div class="page-header-right">
+                    <button class="hdr-btn hdr-btn-export" id="addExpenseBtn" style="background-color: #ef4444; color: white; border-color: #ef4444;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Add Expense
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="summary-cards">
+                <div class="summary-card" style="flex: 1 1 100%;">
+                    <div class="sc-left">
+                        <div class="sc-icon sc-icon-red">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
+                                <line x1="12" y1="12" x2="12" y2="16"></line>
+                                <line x1="8" y1="12" x2="16" y2="12"></line>
+                            </svg>
+                        </div>
+                        <div class="sc-info">
+                            <span class="sc-label">Total Expenses (All Time)</span>
+                            <span class="sc-amount text-red" id="cardTotalExpensesVal">LKR 0.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expenses List Section -->
+            <div class="txn-section">
+                <div class="txn-header">
+                    <div class="txn-title">
+                        <div class="txn-title-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="8" y1="6" x2="21" y2="6"/>
+                                <line x1="8" y1="12" x2="21" y2="12"/>
+                                <line x1="8" y1="18" x2="21" y2="18"/>
+                                <line x1="3" y1="6" x2="3.01" y2="6"/>
+                                <line x1="3" y1="12" x2="3.01" y2="12"/>
+                                <line x1="3" y1="18" x2="3.01" y2="18"/>
+                            </svg>
+                        </div>
+                        Expense Records
+                    </div>
+                </div>
+
+                <!-- Expense List -->
+                <div id="expenseList" class="txn-list">
+                    <!-- Expenses will be dynamically loaded here -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Add Expense Modal -->
+    <div id="addExpenseModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content date-modal-content">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <div class="modal-title-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2>Add New Expense</h2>
+                        <p>Enter details of the new expense</p>
+                    </div>
+                </div>
+                <button class="close-btn" id="closeExpenseModal">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label>Date</label>
+                    <input type="date" id="expenseDate" class="trend-select" style="width: 100%; box-sizing: border-box;">
+                </div>
+                <div class="input-group" style="margin-top: 15px;">
+                    <label>Category</label>
+                    <select id="expenseCategory" class="trend-select" style="width: 100%; box-sizing: border-box;">
+                        <option value="Printing">Printing & Materials</option>
+                        <option value="Rent">Rent & Utility</option>
+                        <option value="Software">Software & Subscriptions</option>
+                        <option value="Transport">Transport</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="input-group" style="margin-top: 15px;">
+                    <label>Amount (LKR)</label>
+                    <input type="number" id="expenseAmount" class="trend-select" placeholder="e.g. 5000" style="width: 100%; box-sizing: border-box;" min="0" step="0.01">
+                </div>
+                <div class="input-group" style="margin-top: 15px;">
+                    <label>Description</label>
+                    <input type="text" id="expenseDescription" class="trend-select" placeholder="Brief description..." style="width: 100%; box-sizing: border-box;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="action-btn apply-btn" id="saveExpenseBtn" style="background-color: #ef4444;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                    Save Expense
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./assets/js/expenses.js"></script>
+    <script type="module" src="./assets/js/application_config.js"></script>
+</body>
+
+</html>

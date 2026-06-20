@@ -175,6 +175,44 @@
                     </div>
                 </div>
 
+                <div class="summary-card">
+                    <div class="sc-left">
+                        <div class="sc-icon sc-icon-red">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
+                                <line x1="12" y1="12" x2="12" y2="16"></line>
+                                <line x1="8" y1="12" x2="16" y2="12"></line>
+                            </svg>
+                        </div>
+                        <div class="sc-info">
+                            <span class="sc-label">Total Expenses</span>
+                            <span class="sc-amount text-red" id="cardExpensesVal">LKR 0.00</span>
+                            <span id="cardExpensesTrend" class="sc-trend trend-neutral">0% vs Prev Month</span>
+                        </div>
+                    </div>
+                    <div class="sc-spark">
+                        <canvas id="sparkExpenses"></canvas>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="sc-left">
+                        <div class="sc-icon sc-icon-green" style="background-color: #dcfce7; color: #16a34a;">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                            </svg>
+                        </div>
+                        <div class="sc-info">
+                            <span class="sc-label">Net Profit</span>
+                            <span class="sc-amount text-green" id="cardProfitVal">LKR 0.00</span>
+                            <span id="cardProfitTrend" class="sc-trend trend-neutral">0% vs Prev Month</span>
+                        </div>
+                    </div>
+                    <div class="sc-spark">
+                        <canvas id="sparkProfit"></canvas>
+                    </div>
+                </div>
+
             </div>
 
             <!-- Charts Section (side by side) -->

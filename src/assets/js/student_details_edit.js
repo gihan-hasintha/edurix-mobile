@@ -29,6 +29,7 @@ async function fetchStudentDetails(id) {
         document.getElementById('address').value = student.address || '';
         document.getElementById('phone_number').value = student.phone_number || '';
         document.getElementById('parent_name').value = student.parent_name || '';
+        document.getElementById('parent_id_number').value = student.parent_id_number || '';
         document.getElementById('parent_phone_number').value = student.parent_phone_number || '';
         
         if (student.birthday) {
@@ -523,6 +524,7 @@ async function removeFromClass(enrollmentId) {
                 address: document.getElementById('address').value,
                 phone_number: document.getElementById('phone_number').value,
                 parent_name: document.getElementById('parent_name').value,
+                parent_id_number: Number(document.getElementById('parent_id_number').value),
                 parent_phone_number: document.getElementById('parent_phone_number').value,
                 birthday: document.getElementById('birthday').value,
                 nfc_number: document.getElementById('nfc-number').value,
@@ -536,7 +538,7 @@ async function removeFromClass(enrollmentId) {
 
             try {
                 const res = await fetch(`${API_URL}/${editStudentId}`, {
-                    method: 'PATCH',
+                    method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                         'x-api-key': '996de2d470a0f1e9794b7778e216c193258aac001b36813f9ad1d3f957cc7ee7'
