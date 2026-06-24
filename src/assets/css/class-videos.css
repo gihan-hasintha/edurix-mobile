@@ -1,18 +1,18 @@
 /* ============================================
-   Exam Scheduler — exam-scheduler.css
+   Video Scheduler — video-scheduler.css
    ============================================ */
 
 /* Page layout */
-.exam-page-container {
+.video-page-container {
     padding: 20px 24px;
     padding-bottom: 80px;
-    background: #ffffff;
+    background: #f8fafc;
     min-height: 100%;
     box-sizing: border-box;
 }
 
 /* ---- Page Header ---- */
-.exam-page-header {
+.video-page-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -21,27 +21,27 @@
     gap: 12px;
 }
 
-.exam-page-header-left h2 {
+.video-page-header-left h2 {
     font-size: 20px;
     font-weight: 700;
     color: #1e293b;
     margin: 0 0 3px 0;
 }
 
-.exam-page-header-left p {
+.video-page-header-left p {
     font-size: 13px;
     color: #64748b;
     margin: 0;
 }
 
-.exam-page-header-right {
+.video-page-header-right {
     display: flex;
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
 }
 
-.exam-filter-select {
+.video-filter-select {
     padding: 8px 12px;
     border: 1px solid #e2e8f0;
     border-radius: 4px;
@@ -53,12 +53,37 @@
     font-family: inherit;
 }
 
-.exam-filter-select:focus {
+.video-filter-select:focus {
     border-color: #dc2626;
 }
 
+.video-search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.video-search-input {
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #4a5568;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E") no-repeat 10px center;
+    padding-left: 32px;
+    outline: none;
+    width: 200px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    font-family: inherit;
+}
+
+.video-search-input:focus {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08);
+}
+
 /* ---- Empty state CTA button ---- */
-.exam-empty-cta {
+.video-empty-cta {
     margin-top: 20px;
     background: #dc2626;
     color: #fff;
@@ -74,25 +99,25 @@
     transition: background 0.15s;
 }
 
-.exam-empty-cta svg {
+.video-empty-cta svg {
     width: 15px;
     height: 15px;
 }
 
-.exam-empty-cta:hover {
+.video-empty-cta:hover {
     background: #b91c1c;
 }
 
 
 /* ---- Stats Row ---- */
-.exam-stats-row {
+.video-stats-row {
     display: flex;
     gap: 16px;
     margin-bottom: 24px;
     flex-wrap: wrap;
 }
 
-.exam-stat-card {
+.video-stat-card {
     flex: 1;
     min-width: 160px;
     background: #fff;
@@ -177,48 +202,49 @@
     letter-spacing: 0.4px;
 }
 
-/* ---- Exam Grid ---- */
-.exam-list-wrapper {
+/* ---- Video Grid ---- */
+.video-list-wrapper {
     position: relative;
 }
 
-.exam-grid {
+.video-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 16px;
 }
 
-/* ---- Exam Card ---- */
-.exam-card {
+/* ---- Video Card ---- */
+.video-card {
     background: #fff;
-    border: 1px solid #e2e8f0;
+    border: 1px solid #cfd5dd;
+    border-radius: 4px;
     overflow: hidden;
     transition: transform 0.18s, box-shadow 0.18s;
     position: relative;
 }
 
-.exam-card-accent {
+.video-card-accent {
     height: 4px;
     width: 100%;
 }
 
-.exam-card.upcoming .exam-card-accent {
+.video-card.upcoming .video-card-accent {
     background: linear-gradient(90deg, #f59e0b, #fbbf24);
 }
 
-.exam-card.completed .exam-card-accent {
+.video-card.completed .video-card-accent {
     background: linear-gradient(90deg, #10b981, #34d399);
 }
 
-.exam-card.today .exam-card-accent {
+.video-card.today .video-card-accent {
     background: linear-gradient(90deg, #ef4444, #f87171);
 }
 
-.exam-card-body {
+.video-card-body {
     padding: 16px 18px;
 }
 
-.exam-card-top {
+.video-card-top {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -226,7 +252,7 @@
     gap: 8px;
 }
 
-.exam-card-title {
+.video-card-title {
     font-size: 15px;
     font-weight: 700;
     color: #1e293b;
@@ -234,17 +260,17 @@
     line-height: 1.3;
 }
 
-.exam-card-class {
+.video-card-class {
     font-size: 12px;
     color: #64748b;
     font-weight: 500;
 }
 
-.exam-status-badge {
+.video-status-badge {
     display: inline-flex;
     align-items: center;
-    gap: 3px;
-    padding: 3px 4px;
+    gap: 5px;
+    padding: 3px 10px;
     border-radius: 20px;
     font-size: 11px;
     font-weight: 700;
@@ -270,14 +296,14 @@
     border: 1px solid #fecaca;
 }
 
-.exam-card-meta {
+.video-card-meta {
     display: flex;
     flex-direction: column;
     gap: 6px;
     margin-bottom: 12px;
 }
 
-.exam-meta-row {
+.video-meta-row {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -285,24 +311,25 @@
     color: #475569;
 }
 
-.exam-meta-row svg {
+.video-meta-row svg {
     width: 14px;
     height: 14px;
     stroke: #94a3b8;
     flex-shrink: 0;
 }
 
-.exam-card-notes {
+.video-card-notes {
     font-size: 12px;
     color: #64748b;
     background: #f8fafc;
     border-radius: 6px;
     padding: 8px 10px;
+    border-left: 3px solid #e2e8f0;
     margin-bottom: 12px;
     line-height: 1.5;
 }
 
-.exam-card-marks {
+.video-card-marks {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -315,7 +342,7 @@
     margin-bottom: 12px;
 }
 
-.exam-card-actions {
+.video-card-actions {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
@@ -324,7 +351,7 @@
     background: #fcfcfd;
 }
 
-.exam-action-btn {
+.video-action-btn {
     padding: 12px 8px;
     font-size: 13px;
     font-weight: 600;
@@ -342,68 +369,68 @@
     text-align: center;
 }
 
-.exam-action-btn:active {
+.video-action-btn:active {
     transform: scale(0.96);
 }
 
-.exam-action-btn svg {
+.video-action-btn svg {
     width: 18px;
     height: 18px;
 }
 
-.exam-action-btn.edit-btn:hover {
+.video-action-btn.edit-btn:hover {
     background: #eff6ff;
     border-color: #93c5fd;
     color: #1d4ed8;
 }
 
-.exam-action-btn.delete-btn:hover {
+.video-action-btn.delete-btn:hover {
     background: #fef2f2;
     border-color: #fca5a5;
     color: #dc2626;
 }
 
-.exam-action-btn.complete-btn:hover {
+.video-action-btn.complete-btn:hover {
     background: #f0fdf4;
     border-color: #86efac;
     color: #15803d;
 }
 
 /* ---- Empty State ---- */
-.exam-empty {
+.video-empty {
     text-align: center;
     padding: 70px 20px;
     color: #94a3b8;
 }
 
-.exam-empty svg {
+.video-empty svg {
     width: 64px;
     height: 64px;
     stroke: #cbd5e1;
     margin-bottom: 16px;
 }
 
-.exam-empty h3 {
+.video-empty h3 {
     font-size: 17px;
     font-weight: 600;
     color: #64748b;
     margin: 0 0 8px;
 }
 
-.exam-empty p {
+.video-empty p {
     font-size: 13px;
     color: #94a3b8;
     margin: 0;
 }
 
 /* ---- Loader ---- */
-.exam-loader {
+.video-loader {
     text-align: center;
     padding: 60px 20px;
     color: #64748b;
 }
 
-.exam-spinner {
+.video-spinner {
     width: 36px;
     height: 36px;
     border: 3px solid #e2e8f0;
@@ -424,7 +451,7 @@
 }
 
 /* ---- Add Button ---- */
-.exam-add-btn {
+.video-add-btn {
     background: #dc2626;
     color: #fff;
     border: none;
@@ -439,29 +466,29 @@
     transition: background 0.15s;
 }
 
-.exam-add-btn:hover {
+.video-add-btn:hover {
     background: #b91c1c;
 }
 
 /* ============ Modal ============ */
-.exam-modal-overlay {
+.video-modal-overlay {
     display: none;
     position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.35);
+    width: 100%;
+    height: 100%;
+    top: 0;
+    background: #000000bd;
     z-index: 1000;
     align-items: center;
     justify-content: center;
-    padding: 20px;
 }
 
-.exam-modal-overlay.open {
+.video-modal-overlay.open {
     display: flex;
 }
 
-.exam-modal-box {
+.video-modal-box {
     background: #fff;
-    border-radius: 14px;
     width: 100%;
     max-width: 560px;
     max-height: 90vh;
@@ -482,11 +509,11 @@
     }
 }
 
-.exam-modal-header {
+.video-modal-header {
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 22px 24px 16px;
+    padding: 14px 20px 12px;
     border-bottom: 1px solid #f1f5f9;
     position: relative;
 }
@@ -507,20 +534,20 @@
     height: 22px;
 }
 
-.exam-modal-header h2 {
+.video-modal-header h2 {
     font-size: 17px;
     font-weight: 700;
     color: #1e293b;
     margin: 0 0 2px;
 }
 
-.exam-modal-header p {
+.video-modal-header p {
     font-size: 13px;
     color: #64748b;
     margin: 0;
 }
 
-.exam-modal-close {
+.video-modal-close {
     margin-left: auto;
     background: none;
     border: none;
@@ -533,34 +560,34 @@
     transition: background 0.15s;
 }
 
-.exam-modal-close:hover {
+.video-modal-close:hover {
     background: #f1f5f9;
 }
 
-.exam-modal-close svg {
+.video-modal-close svg {
     width: 20px;
     height: 20px;
 }
 
 /* Form grid */
-.exam-form-grid {
+.video-form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 14px 20px;
-    padding: 20px 24px;
+    gap: 10px 16px;
+    padding: 14px 20px;
 }
 
-.exam-form-group {
+.video-form-group {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
 }
 
-.exam-form-group.full-width {
+.video-form-group.full-width {
     grid-column: 1 / -1;
 }
 
-.exam-form-group label {
+.video-form-group label {
     font-size: 13px;
     font-weight: 600;
     color: #374151;
@@ -570,11 +597,11 @@
     color: #dc2626;
 }
 
-.exam-form-group input,
-.exam-form-group select,
-.exam-form-group textarea {
+.video-form-group input,
+.video-form-group select,
+.video-form-group textarea {
     width: 100%;
-    padding: 9px 12px;
+    padding: 7px 10px;
     border: 1px solid #d1d5db;
     border-radius: 7px;
     font-size: 13px;
@@ -586,20 +613,20 @@
     font-family: inherit;
 }
 
-.exam-form-group input:focus,
-.exam-form-group select:focus,
-.exam-form-group textarea:focus {
+.video-form-group input:focus,
+.video-form-group select:focus,
+.video-form-group textarea:focus {
     border-color: #dc2626;
     box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08);
 }
 
-.exam-form-group textarea {
+.video-form-group textarea {
     resize: vertical;
     min-height: 72px;
 }
 
 /* Modal footer */
-.exam-modal-footer {
+.video-modal-footer {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
@@ -607,7 +634,7 @@
     border-top: 1px solid #f1f5f9;
 }
 
-.exam-btn-cancel {
+.video-btn-cancel {
     background: #f1f5f9;
     color: #4b5563;
     border: none;
@@ -619,11 +646,11 @@
     transition: background 0.15s;
 }
 
-.exam-btn-cancel:hover {
+.video-btn-cancel:hover {
     background: #e2e8f0;
 }
 
-.exam-btn-save {
+.video-btn-save {
     background: #dc2626;
     color: #fff;
     border: none;
@@ -638,16 +665,16 @@
     transition: background 0.15s;
 }
 
-.exam-btn-save svg {
+.video-btn-save svg {
     width: 16px;
     height: 16px;
 }
 
-.exam-btn-save:hover {
+.video-btn-save:hover {
     background: #b91c1c;
 }
 
-.exam-btn-save:disabled {
+.video-btn-save:disabled {
     opacity: 0.6;
     cursor: not-allowed;
 }

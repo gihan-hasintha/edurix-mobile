@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "945136094597",
+    "project_id": "edurix-file",
+    "storage_bucket": "edurix-file.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:945136094597:android:49ca0a20cb0825140948ec",
+        "android_client_info": {
+          "package_name": "com.edurix.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "945136094597-c341nhfpfkb8qcfn5k05bjoaq1p3fhng.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.edurix.app",
+            "certificate_hash": "960af1c661e9eb3b22157b627d9f3338465a293c"
+          }
+        },
+        {
+          "client_id": "945136094597-4hr21un9ugf9honpt679ohmcnhosq932.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9xLRPud7j71dkfPaxV-96avwe7TB6fW4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "945136094597-4hr21un9ugf9honpt679ohmcnhosq932.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -26,12 +26,19 @@
         
         // Try the new key first, fall back to old for migration if needed
         const activatedData = localStorage.getItem('Activated_Teacher') || localStorage.getItem('Activated_Institution');
-        if (!activatedData) {
+        if (!activatedData || activatedData === 'undefined') {
             schoolNameDisplay.textContent = 'Activation Required';
             return;
         }
 
-        const stored = JSON.parse(activatedData);
+        let stored;
+        try {
+            stored = JSON.parse(activatedData);
+        } catch (e) {
+            schoolNameDisplay.textContent = 'Activation Required';
+            return;
+        }
+        
         schoolNameDisplay.textContent = 'Loading...';
 
         try {

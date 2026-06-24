@@ -3,7 +3,13 @@
   "appName": "Edurix",
   "bundledWebRuntime": false,
   "webDir": "dist",
+  "overrideUserAgent": "Mozilla/5.0 (Linux; Android 10; SM-G981B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.162 Mobile Safari/537.36",
   "plugins": {
+    "GoogleAuth": {
+      "scopes": ["profile", "email", "https://www.googleapis.com/auth/drive.file"],
+      "serverClientId": "945136094597-4hr21un9ugf9honpt679ohmcnhosq932.apps.googleusercontent.com",
+      "forceCodeForRefreshToken": true
+    },
     "SplashScreen": {
       "launchShowDuration": 0
     },

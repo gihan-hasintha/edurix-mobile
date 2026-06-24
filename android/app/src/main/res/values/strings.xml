@@ -4,4 +4,5 @@
     <string name="title_activity_main">Edurix</string>
     <string name="package_name">com.edurix.app</string>
     <string name="custom_url_scheme">com.edurix.app</string>
+    <string name="server_client_id">945136094597-4hr21un9ugf9honpt679ohmcnhosq932.apps.googleusercontent.com</string>
 </resources>
