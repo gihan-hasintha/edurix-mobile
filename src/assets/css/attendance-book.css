@@ -1,0 +1,575 @@
+/* Attendance Book CSS */
+
+.book-container {
+    display: flex;
+    height: calc(100vh - 70px);
+    background: #ffffff;
+    overflow: hidden;
+}
+
+.book-sidebar {
+    width: 320px;
+    background: #ffffff;
+    border-right: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+}
+
+.sidebar-header {
+    padding: 20px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.sidebar-header h2 {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+    color: #0f172a;
+}
+
+.sidebar-header p {
+    margin: 0;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.search-box {
+    padding: 15px 20px;
+    position: relative;
+    border-bottom: 1px solid #e2e8f0;
+    background: #ffffff;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 10px 10px 10px 36px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.search-box input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.search-box .search-icon {
+    position: absolute;
+    left: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+}
+
+.student-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 30px 20px;
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.student-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 5px;
+    border: 1px solid transparent;
+}
+
+.student-item:hover {
+    background: #f1f5f9;
+}
+
+.student-item.active {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.student-item.warning-state {
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+.student-item.warning-state:hover {
+    background: #fee2e2;
+}
+
+.warning-icon {
+    width: 14px;
+    height: 14px;
+    color: #ef4444;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+.student-item-photo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    margin-right: 12px;
+    border: 2px solid #e2e8f0;
+}
+
+.student-item-details {
+    flex: 1;
+    overflow: hidden;
+}
+
+.student-item-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: #1e293b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+}
+
+.student-item-id {
+    font-size: 12px;
+    color: #64748b;
+}
+
+/* Right Panel */
+.book-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #ffffff;
+}
+
+.book-placeholder {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    color: #64748b;
+    text-align: center;
+    padding: 40px;
+}
+
+.book-placeholder h3 {
+    margin: 0 0 10px 0;
+    color: #334155;
+    font-size: 20px;
+}
+
+.student-profile-header {
+    background: #ffffff;
+    padding: 25px 30px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.student-photo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    border: 3px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.student-details h2 {
+    margin: 0 0 5px 0;
+    font-size: 24px;
+    color: #0f172a;
+}
+
+.student-id {
+    font-size: 13px;
+    font-weight: 600;
+    color: #3b82f6;
+    background: #eff6ff;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.student-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.student-meta span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.book-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px 30px;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-group label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #475569;
+}
+
+.filter-group select,
+.filter-group input {
+    padding: 6px 8px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+    color: #1e293b;
+    background: #ffffff;
+}
+
+.ledger-container {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.ledger-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+}
+
+.ledger-table th,
+.ledger-table td {
+    padding: 11px 20px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 14px;
+}
+
+.ledger-table th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #f1f5f9;
+    font-weight: 600;
+    color: #475569;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+.ledger-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.status-present {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.status-absent {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.status-paid {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.status-unpaid {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.spinner {
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #ff0000;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Toggle Switch Styles */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 22px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #cbd5e1;
+    transition: .2s;
+    border-radius: 22px;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: .2s;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-switch input:checked+.toggle-slider {
+    background-color: #ff0000 !important;
+}
+
+.toggle-switch input:checked+.toggle-slider:before {
+    transform: translateX(18px);
+}
+
+/* Calendar View Styles */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 12px;
+}
+
+.calendar-day-header {
+    text-align: center;
+    font-weight: 600;
+    color: #ffffff;
+    padding: 10px 0;
+    font-size: 13px;
+    text-transform: uppercase;
+    background: #ff0000;
+    border-radius: 4px;
+}
+
+.calendar-cell {
+    min-height: 100px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.calendar-cell.empty {
+    background: transparent;
+    border: none;
+}
+
+.calendar-cell.today {
+    border: 2px solid #3b82f6;
+}
+
+.calendar-cell .date-num {
+    font-weight: 700;
+    font-size: 14px;
+    color: #0f172a;
+    margin-bottom: 5px;
+    align-self: flex-end;
+}
+
+.calendar-event {
+    font-size: 11px;
+    padding: 6px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-left: 1px solid #1971ff;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    overflow: hidden;
+}
+
+.calendar-event .ev-title {
+    font-weight: 600;
+    color: #1e293b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.calendar-event .ev-status {
+    display: flex;
+    gap: 5px;
+}
+
+/* Settings Dropdown */
+.settings-dropdown {
+    position: relative;
+    -webkit-app-region: no-drag;
+}
+
+.settings-btn {
+    background: #ffffff00;
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 13px;
+    transition: background 0.2s;
+}
+
+.settings-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.settings-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    margin-top: 6px;
+    background: #ffffff;
+    border-radius: 4px;
+    box-shadow: 0 4px 5px #0000002f;
+    min-width: 220px;
+    z-index: 1000;
+    padding: 8px 0;
+}
+
+.settings-menu-item {
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f1f5f95c;
+}
+
+.settings-menu-item span {
+    color: #000000;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.settings-menu-item .toggle-switch {
+    margin: 0;
+}
+/* Mobile Responsiveness for Attendance Book */
+@media (max-width: 768px) {
+    .book-container {
+        flex-direction: column;
+        height: auto;
+        min-height: calc(100vh - 70px);
+    }
+    
+    .book-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #e2e8f0;
+        height: auto;
+        max-height: 50vh;
+    }
+    
+    .student-profile-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px 15px;
+    }
+    
+    .student-id-row {
+        justify-content: center;
+    }
+    
+    .student-meta {
+        justify-content: center;
+    }
+    
+    .book-filters {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 15px;
+    }
+    
+    .filter-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-group label {
+        margin-bottom: 5px;
+    }
+    
+    .charts-container {
+        flex-direction: column;
+        padding: 15px;
+    }
+    
+    .ledger-table th, .ledger-table td {
+        padding: 10px;
+        font-size: 13px;
+    }
+
+    #studentFilterModal > div {
+        width: 90% !important;
+        margin: 20px auto;
+    }
+}

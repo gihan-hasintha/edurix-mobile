@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Book - Edurix</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/sub_nav_style.css">
+    <link rel="stylesheet" href="./assets/css/attendance-book.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <!-- Mobile Navbar -->
+    <div id="navbar">
+        <div class="navbar-for-application">
+            <div class="navbar-for-application-content" style="justify-content: space-between;">
+                <div class="navbar-for-application-content-left">
+                    <div class="navbar-for-application-content-left-back" onclick="window.history.back()" style="cursor:pointer; margin-right:15px; display:flex; align-items:center; color:#fff;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                    </div>
+                    <div class="navbar-for-application-content-left-logo">
+                        <img src="./assets/img/logo.png" alt="">
+                    </div><span class="nav-separator" style="color: white; margin: 0 10px;"> - </span><div id="navbar-for-application-content-left-school-name" style="color: white;">Loading...</div><span class="nav-separator" style="color: white; margin: 0 10px;"> - </span><div id="navbar-for-application-content-left-school-name-page-name" style="color: white;">Attendance Book</div>
+                </div>
+                <div class="navbar-for-application-content-righ" style="display: flex; align-items: center; gap: 15px;">
+                    <div class="settings-dropdown">
+                        <button id="settingsDropdownBtn" class="settings-btn" style="background: transparent; border: none; color: white; display: flex; align-items: center; gap: 5px;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                        </button>
+                        <div id="settingsDropdownMenu" class="settings-menu">
+                            <div class="settings-menu-item">
+                                <span>Show Charts</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="navbarShowChartsToggle">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="settings-menu-item">
+                                <span>Absence Warning</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="navbarAbsenceWarningToggle">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="settings-menu-item" style="border-bottom: none;">
+                                <span>Calendar Mode</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="navbarViewModeToggle">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="navbar-space"></div>
+    </div>
+
+    <!-- Fullscreen Loading overlay -->
+    <div id="loading-window" style="display: none;">
+        <div class="loading-window-content">
+            <svg viewBox="25 25 50 50">
+                <circle r="20" cy="50" cx="50"></circle>
+            </svg>
+            <div style="margin-top: 15px; font-weight: 600; color: #333;">Loading data...</div>
+        </div>
+    </div>
+
+    <div id="main-application">
+        <div class="book-container">
+            <!-- Left Panel: Search & Select Student -->
+            <div class="book-sidebar">
+                <div class="sidebar-header">
+                    <h2>Student Search</h2>
+                    <p>Search by name, ID or phone</p>
+                </div>
+                <div class="search-box" style="display: flex; gap: 10px; align-items: center;">
+                    <div style="position: relative; flex: 1;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon"
+                            style="left: 10px;">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <input type="text" id="studentSearchInput" placeholder="Enter student details..."
+                            style="padding-left: 32px; width: 100%; box-sizing: border-box;">
+                    </div>
+                    <button id="openStudentFilterBtn" title="Filter Students"
+                        style="width: 42px; height: 42px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #64748b; flex-shrink: 0; transition: 0.2s;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="student-list" id="studentListContainer">
+                    <div class="empty-state">
+                        <p>Type to search for a student</p>
+                    </div>
+                    <!-- Student items injected here -->
+                </div>
+            </div>
+
+            <!-- Right Panel: Attendance & Payment History -->
+            <div class="book-content" id="bookContent" style="display: none;">
+
+                <!-- Student Profile Header -->
+                <div class="student-profile-header" style="flex-wrap: wrap;">
+                    <div class="student-photo" id="bookStudentPhoto"
+                        style="background-image: url('./assets/img/student.png');"></div>
+                    <div class="student-details">
+                        <h2 id="bookStudentName" style="display:flex; align-items:center;">Student Name </h2>
+                        <div class="student-id-row"
+                            style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                            <div class="student-id" id="bookStudentId" style="margin-bottom: 0;">STU-0000</div>
+                            <span id="bookStudentPersonalPhone"
+                                style="display: none; font-size: 13px; color: #64748b; align-items: center; gap: 6px;"><svg
+                                    width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                                    <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                                </svg> Student Phone</span>
+                        </div>
+                        <div class="student-meta">
+                            <span id="bookStudentParent"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="9" cy="7" r="4"></circle>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                </svg> Parent Name</span>
+                            <span id="bookStudentPhone"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path
+                                        d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
+                                    </path>
+                                </svg> 07X-XXXXXXX</span>
+                            <span id="bookStudentEmail" style="display: none;"><svg width="14" height="14"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path
+                                        d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                                    </path>
+                                    <polyline points="22,6 12,13 2,6"></polyline>
+                                </svg> Email</span>
+                            <span id="bookStudentAddress" style="display: none;"><svg width="14" height="14"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg> Address</span>
+                            <span id="bookStudentBirthday" style="display: none;"><svg width="14" height="14"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"></path>
+                                    <path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"></path>
+                                    <path d="M2 21h20"></path>
+                                    <path d="M7 8v3"></path>
+                                    <path d="M12 8v3"></path>
+                                    <path d="M17 8v3"></path>
+                                    <path d="M7 4h.01"></path>
+                                    <path d="M12 4h.01"></path>
+                                    <path d="M17 4h.01"></path>
+                                </svg> Birthday</span>
+                            <span id="bookStudentJoinedDate" style="display: none;"><svg width="14" height="14"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg> Joined Date</span>
+                            <span id="bookStudentFreeCard"
+                                style="display: none; background: #fef08a; color: #854d0e; padding: 2px 8px; border-radius: 12px; font-weight: 600;"><svg
+                                    width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                                    </polygon>
+                                </svg> Free Card</span>
+                        </div>
+                    </div>
+                    <div id="consecutiveAbsenceBanner" style="display:none; width: 100%; margin-top: 15px; background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; padding: 12px 15px; border-radius: 8px; align-items: center; gap: 10px; font-weight: 600; font-size: 14px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                        <span id="consecutiveAbsenceText">Warning: This student has missed 3 consecutive classes.</span>
+                    </div>
+                </div>
+
+                <!-- Filters for the Book -->
+                <div class="book-filters">
+                    <div class="filter-group">
+                        <label>Filter by Class:</label>
+                        <select id="bookClassFilter">
+                            <option value="All">All Enrolled Classes</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Month:</label>
+                        <input type="month" id="bookMonthFilter">
+                    </div>
+                    <div class="filter-group">
+                        <label>Upcoming Classes:</label>
+                        <select id="bookUpcomingFilter">
+                            <option value="hide" selected>Hide</option>
+                            <option value="show">Show</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Attendance:</label>
+                        <select id="bookAttendanceFilter">
+                            <option value="All" selected>All</option>
+                            <option value="Present">Present</option>
+                            <option value="Absent">Absent</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Payment:</label>
+                        <select id="bookPaymentFilter">
+                            <option value="All" selected>All</option>
+                            <option value="Paid">Paid</option>
+                            <option value="Unpaid">Unpaid</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-container" id="studentChartsContainer" style="display: none; padding: 20px 30px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; gap: 20px;">
+                    <div style="flex: 2; background: white; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; position: relative;">
+                        <h4 style="margin:0 0 10px 0; color:#475569; font-size:14px;">Attendance (Last 6 Months)</h4>
+                        <div style="height: 200px; width: 100%;">
+                            <canvas id="attendanceBarChart"></canvas>
+                        </div>
+                    </div>
+                    <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; position: relative; display: flex; flex-direction: column;">
+                        <h4 style="margin:0 0 10px 0; color:#475569; font-size:14px;">Payment Status</h4>
+                        <div style="flex: 1; width: 100%; position: relative;">
+                            <canvas id="paymentPieChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ledger Table -->
+                <div class="ledger-container" id="ledgerTableContainer">
+                    <table class="ledger-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Class Name</th>
+                                <th>Check-in</th>
+                                <th>Check-out</th>
+                                <th>Attendance</th>
+                                <th>Payment Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ledgerTableBody">
+                            <!-- Rows injected here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Ledger Calendar View -->
+                <div id="ledgerCalendarContainer" style="display: none; flex: 1; overflow-y: auto;">
+                    <!-- Calendar injected here -->
+                </div>
+
+            </div>
+
+            <!-- Placeholder when no student is selected -->
+            <div class="book-placeholder" id="bookPlaceholder">
+                <img src="./assets/img/books.png" alt="Select Student"
+                    style="width: 120px; opacity: 0.5; margin-bottom: 20px;">
+                <h3>Select a student to view their Attendance Book</h3>
+                <p>Search and click on a student from the left panel to load their full attendance and payment records.
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div id="toastContainer"
+        style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;">
+    </div>
+
+    <!-- Student Filter Modal -->
+    <div id="studentFilterModal"
+        style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div
+            style="background: white; width: 400px; border-radius: 12px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); position: relative;">
+            <button id="closeStudentFilterBtn"
+                style="position: absolute; right: 20px; top: 20px; background: none; border: none; cursor: pointer; color: #64748b;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            <h3 style="margin: 0 0 20px 0; font-size: 18px; color: #0f172a;">Filter Students</h3>
+
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <!-- Free Card Filter -->
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <label for="filterFreeCard"
+                        style="cursor: pointer; font-size: 14px; color: #334155; font-weight: 600;">Show Free Card
+                        Students Only</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="filterFreeCard">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <!-- Class Filter -->
+                <div>
+                    <label
+                        style="display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 5px;">Filter
+                        by Class</label>
+                    <select id="filterClassSelect"
+                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none;">
+                        <option value="All">All Classes</option>
+                    </select>
+                </div>
+
+                <!-- Absent Student Filter -->
+                <div>
+                    <label
+                        style="display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 5px;">Top
+                        Absent Students</label>
+                    <input type="number" id="filterAbsentCount" placeholder="e.g. 5, 10..." min="1"
+                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; box-sizing: border-box;">
+                    <small style="color: #64748b; font-size: 12px; margin-top: 5px; display: block;">Enter a number to
+                        see top most absent students across their classes.</small>
+                </div>
+
+                <!-- Sort Order -->
+                <div>
+                    <label
+                        style="display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 5px;">Sort
+                        By</label>
+                    <select id="filterSortSelect"
+                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none;">
+                        <option value="name_asc">Name (A-Z)</option>
+                        <option value="name_desc">Name (Z-A)</option>
+                        <option value="date_desc">Newest First</option>
+                        <option value="date_asc">Oldest First</option>
+                    </select>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button id="applyStudentFiltersBtn"
+                        style="flex: 1; padding: 12px; background: #3b82f6; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Apply
+                        Filters</button>
+                    <button id="resetStudentFiltersBtn"
+                        style="padding: 12px 20px; background: #f1f5f9; color: #475569; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./assets/js/attendance-book.js"></script>
+    <script src="./assets/js/application_config.js"></script>
+</body>
+
+</html>
