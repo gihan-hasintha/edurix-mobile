@@ -693,10 +693,14 @@ async function saveVideo(e) {
         // Save to video_students table
         if (visibilityMode === 'students' && savedVideoId) {
             // 1. Delete existing rows for this video
-            await fetch(`${VIDEO_STUDENTS_API}?video_id=${savedVideoId}`, {
-                method: 'DELETE',
-                headers: { 'x-api-key': X_API_KEY }
-            });
+            const existingRes = await fetch(`${VIDEO_STUDENTS_API}?video_id=${savedVideoId}`, { headers: { 'x-api-key': X_API_KEY } });
+            if (existingRes.ok) {
+                const existingData = await existingRes.json();
+                const itemsToDelete = Array.isArray(existingData) ? existingData : (existingData.items || []);
+                await Promise.all(itemsToDelete.map(item => 
+                    fetch(`${VIDEO_STUDENTS_API}/${item.id}`, { method: 'DELETE', headers: { 'x-api-key': X_API_KEY } })
+                ));
+            }
 
             // 2. Bulk insert one row per selected student
             const now2 = new Date().toISOString();
@@ -709,10 +713,14 @@ async function saveVideo(e) {
             ));
         } else if (visibilityMode !== 'students' && (editingVideoId)) {
             // If switched away from 'students' mode, clean up old rows
-            await fetch(`${VIDEO_STUDENTS_API}?video_id=${editingVideoId}`, {
-                method: 'DELETE',
-                headers: { 'x-api-key': X_API_KEY }
-            });
+            const existingRes = await fetch(`${VIDEO_STUDENTS_API}?video_id=${editingVideoId}`, { headers: { 'x-api-key': X_API_KEY } });
+            if (existingRes.ok) {
+                const existingData = await existingRes.json();
+                const itemsToDelete = Array.isArray(existingData) ? existingData : (existingData.items || []);
+                await Promise.all(itemsToDelete.map(item => 
+                    fetch(`${VIDEO_STUDENTS_API}/${item.id}`, { method: 'DELETE', headers: { 'x-api-key': X_API_KEY } })
+                ));
+            }
         }
 
         closeVideoModal();
