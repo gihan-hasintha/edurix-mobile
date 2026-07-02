@@ -229,12 +229,15 @@ function renderTable() {
             const rowStyle = group.hasToday ? 'background:#fff7f7;' : '';
             tr.setAttribute('style', rowStyle);
             
+            let typeColor = group.student.class_type === 'Online' ? '#3b82f6' : (group.student.class_type === 'Both' ? '#8b5cf6' : '#10b981');
+            let classTypeHtml = group.student.class_type ? `<span style="background: ${typeColor}20; color: ${typeColor}; padding: 1px 4px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-left: 6px; vertical-align: middle;">${group.student.class_type.toUpperCase()}</span>` : '';
+            
             tr.innerHTML = `
                 <td>
                     <div class="student-info">
                         <img class="student-photo" src="${photo}" onerror="this.src='./assets/img/student-blank-image.jpg'" alt="${group.student.student_name}">
                         <div class="student-details">
-                            <span class="student-name">${group.student.student_name}</span>
+                            <span class="student-name">${group.student.student_name}${classTypeHtml}</span>
                             <span class="student-id">${group.student.student_id || 'N/A'}</span>
                         </div>
                     </div>

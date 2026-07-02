@@ -160,11 +160,14 @@ function viewStudents(classId, className) {
         enrolledStudents.forEach(s => {
             const div = document.createElement('div');
             div.className = 'mini-student-item';
+            let typeColor = s.class_type === 'Online' ? '#3b82f6' : (s.class_type === 'Both' ? '#8b5cf6' : '#10b981');
+            let classTypeHtml = s.class_type ? `<span style="background: ${typeColor}20; color: ${typeColor}; padding: 1px 4px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-left: 6px; vertical-align: middle;">${s.class_type.toUpperCase()}</span>` : '';
+
             div.innerHTML = `
                 <div class="mini-student-info">
                     <img src="${s.student_photo || './assets/img/student-blank-image.jpg'}" class="mini-student-img" onerror="this.src='./assets/img/student-blank-image.jpg'">
                     <div class="mini-student-details">
-                        <strong>${s.student_name}</strong>
+                        <strong>${s.student_name} ${classTypeHtml}</strong>
                         <small>ID: ${s.student_id || 'N/A'}</small>
                     </div>
                 </div>
@@ -186,7 +189,7 @@ function openModal() {
     
     // Sync custom dropdowns to default state
     updateCustomSelectDisplay('classdate', '');
-    updateCustomSelectDisplay('payment_type', 'Monthly');
+    updateCustomSelectDisplay('payment_type', 'Per Day');
 
     document.querySelector('#classModal .modal-header h2').textContent = 'Add New Class';
     document.getElementById('saveBtn').textContent = 'Save Class';
@@ -205,11 +208,11 @@ function openEditModal(classId) {
     document.getElementById('classtime').value = cls.classtime || '';
     document.getElementById('class_endtime').value = cls.class_endtime || '';
     document.getElementById('fee_amount').value = cls.fee_amount || '';
-    document.getElementById('payment_type').value = cls.payment_type || 'Monthly';
+    document.getElementById('payment_type').value = cls.payment_type || 'Per Day';
 
     // Sync custom dropdowns with loaded data
     updateCustomSelectDisplay('classdate', cls.classdate || '');
-    updateCustomSelectDisplay('payment_type', cls.payment_type || 'Monthly');
+    updateCustomSelectDisplay('payment_type', cls.payment_type || 'Per Day');
 
     document.querySelector('#classModal .modal-header h2').textContent = 'Edit Class';
     document.getElementById('saveBtn').textContent = 'Update Class';

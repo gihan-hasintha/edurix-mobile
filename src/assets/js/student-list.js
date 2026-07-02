@@ -82,6 +82,9 @@
                     : `<img src="./assets/img/student-blank-image.jpg" style="width: 100%; height: 100%; object-fit: cover; display: block;">`;
 
                 const birthday = student.birthday ? new Date(student.birthday).toLocaleDateString() : 'N/A';
+                
+                let typeColor = student.class_type === 'Online' ? '#3b82f6' : (student.class_type === 'Both' ? '#8b5cf6' : '#10b981');
+                let classTypeHtml = student.class_type ? `<span style="background: ${typeColor}20; color: ${typeColor}; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-left: 8px;">${student.class_type.toUpperCase()}</span>` : '';
 
                 const card = document.createElement('div');
                 card.style.cssText = 'background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);';
@@ -94,7 +97,7 @@
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 4px; overflow: hidden;">
                                 <span style="background: #f1f5f9; color: #64748b; font-size: 11px; padding: 2px 6px; border-radius: 4px; align-self: flex-start; font-weight: 600;">${student.student_id || 'N/A'}</span>
-                                <span style="font-weight: 600; font-size: 14px; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${student.student_name || 'N/A'}</span>
+                                <span style="font-weight: 600; font-size: 14px; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${student.student_name || 'N/A'}${classTypeHtml}</span>
                             </div>
                         </div>
                         <div style="display: flex; align-items: center; gap: 6px; padding-top: 4px; flex-shrink: 0;">
@@ -150,10 +153,11 @@
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const classFilter = document.getElementById('classFilter') ? document.getElementById('classFilter').value : 'All';
             const statusFilter = document.getElementById('statusFilter').value;
+            const typeFilter = document.getElementById('typeFilter') ? document.getElementById('typeFilter').value : 'All';
             const sortFilter = document.getElementById('sortFilter').value;
 
             let filtered = allStudents.filter(student => {
-                const matchSearch = 
+                const matchSearch = !searchTerm ||
                     (student.student_name && student.student_name.toLowerCase().includes(searchTerm)) ||
                     (student.phone_number && student.phone_number.includes(searchTerm)) ||
                     (student.parent_name && student.parent_name.toLowerCase().includes(searchTerm)) ||
@@ -166,8 +170,14 @@
                 if (classFilter !== 'All') {
                     matchClass = allEnrollments.some(e => String(e.student_id) === String(student.id) && String(e.class_id) === classFilter);
                 }
+                
+                let matchType = true;
+                if (typeFilter !== 'All' && typeFilter !== 'all') {
+                    let studentType = student.class_type || 'Physical';
+                    matchType = studentType === typeFilter;
+                }
 
-                return matchSearch && matchStatus && matchClass;
+                return matchSearch && matchStatus && matchClass && matchType;
             });
 
             if (sortFilter === 'Name') {
@@ -212,6 +222,7 @@
 
         if(document.getElementById('classFilter')) document.getElementById('classFilter').addEventListener('change', applyFilters);
         document.getElementById('statusFilter').addEventListener('change', applyFilters);
+        if(document.getElementById('typeFilter')) document.getElementById('typeFilter').addEventListener('change', applyFilters);
         document.getElementById('sortFilter').addEventListener('change', applyFilters);
 
         // Initialize

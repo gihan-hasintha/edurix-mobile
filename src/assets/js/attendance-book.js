@@ -261,10 +261,13 @@ function renderStudentList(students) {
             warningIcon = `<svg class="warning-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="3+ Consecutive Absences"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`;
         }
         
+        let typeColor = s.class_type === 'Online' ? '#3b82f6' : (s.class_type === 'Both' ? '#8b5cf6' : '#10b981');
+        let classTypeHtml = s.class_type ? `<span style="background: ${typeColor}20; color: ${typeColor}; padding: 1px 4px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-left: 6px; vertical-align: middle;">${s.class_type.toUpperCase()}</span>` : '';
+        
         div.innerHTML = `
             <div class="student-item-photo" style="background-image: url('${photo}'), url('./assets/img/student-blank-image.jpg');"></div>
             <div class="student-item-details">
-                <div class="student-item-name" style="display:flex; align-items:center;">${s.student_name} ${warningIcon}</div>
+                <div class="student-item-name" style="display:flex; align-items:center;">${s.student_name} ${classTypeHtml} ${warningIcon}</div>
                 <div class="student-item-id">${s.student_id || 'No ID'}</div>
             </div>
         `;
@@ -281,7 +284,9 @@ async function selectStudent(student) {
     document.getElementById('bookPlaceholder').style.display = 'none';
     document.getElementById('bookContent').style.display = 'flex';
 
-    document.getElementById('bookStudentName').textContent = student.student_name;
+    let typeColor = student.class_type === 'Online' ? '#3b82f6' : (student.class_type === 'Both' ? '#8b5cf6' : '#10b981');
+    let classTypeHtml = student.class_type ? `<span style="background: ${typeColor}20; color: ${typeColor}; padding: 1px 4px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-left: 6px; vertical-align: middle;">${student.class_type.toUpperCase()}</span>` : '';
+    document.getElementById('bookStudentName').innerHTML = student.student_name + classTypeHtml;
     document.getElementById('bookStudentId').textContent = student.student_id || 'N/A';
     
     const phoneEl = document.getElementById('bookStudentPhone');

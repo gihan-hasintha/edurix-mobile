@@ -259,7 +259,7 @@
                         <div class="input-icon-wrapper">
                             <div class="custom-select-container">
                                 <div class="custom-select-trigger" onclick="toggleDropdown('payment_type-dropdown')">
-                                    <span class="trigger-text" id="payment_type-display">Monthly</span>
+                                    <span class="trigger-text" id="payment_type-display">Per Day</span>
                                     <span class="trigger-arrow">
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
                                             stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -269,7 +269,7 @@
                                     </span>
                                 </div>
                                 <div class="custom-select-dropdown" id="payment_type-dropdown">
-                                    <div class="custom-option selected" data-value="Monthly"
+                                    <div class="custom-option" data-value="Monthly"
                                         onclick="selectOption('payment_type', 'Monthly', 'Monthly', this)">
                                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
                                             stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -278,7 +278,7 @@
                                             <line x1="1" y1="10" x2="23" y2="10"></line>
                                         </svg> Monthly
                                     </div>
-                                    <div class="custom-option" data-value="Per Day"
+                                    <div class="custom-option selected" data-value="Per Day"
                                         onclick="selectOption('payment_type', 'Per Day', 'Per Day', this)">
                                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
                                             stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -289,8 +289,8 @@
                                     </div>
                                 </div>
                                 <select id="payment_type" required class="hidden-select">
-                                    <option value="Monthly" selected>Monthly</option>
-                                    <option value="Per Day">Per Day</option>
+                                    <option value="Monthly">Monthly</option>
+                                    <option value="Per Day" selected>Per Day</option>
                                 </select>
                             </div>
                         </div>

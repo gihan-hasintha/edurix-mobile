@@ -204,11 +204,15 @@ function renderSearchResults(students) {
         const isEnrolled = enrolledStudentIds.has(s.id);
         const div = document.createElement('div');
         div.className = 'student-item';
+        
+        let typeColor = s.class_type === 'Online' ? '#3b82f6' : (s.class_type === 'Both' ? '#8b5cf6' : '#10b981');
+        let classTypeHtml = s.class_type ? `<span style="background: ${typeColor}20; color: ${typeColor}; padding: 1px 4px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-left: 6px; vertical-align: middle;">${s.class_type.toUpperCase()}</span>` : '';
+        
         div.innerHTML = `
             <div class="student-info">
                 <div class="student-img" style="background-image: url('${s.student_photo || './assets/img/student-blank-image.jpg'}'), url('./assets/img/student-blank-image.jpg');"></div>
                 <div class="student-details">
-                    <strong>${s.student_name}</strong>
+                    <strong>${s.student_name} ${classTypeHtml}</strong>
                     <small>${s.student_id || ''}</small>
                 </div>
             </div>
@@ -229,6 +233,7 @@ function renderSearchResults(students) {
 function filterSearch() {
     const term = document.getElementById('studentSearchInput') ? document.getElementById('studentSearchInput').value.toLowerCase() : '';
     const status = document.getElementById('statusFilter') ? document.getElementById('statusFilter').value : 'all';
+    const classType = document.getElementById('classTypeFilter') ? document.getElementById('classTypeFilter').value : 'all';
     
     let filtered = allStudents;
 
@@ -238,6 +243,13 @@ function filterSearch() {
             (s.student_id && s.student_id.toLowerCase().includes(term)) ||
             (s.nfc_number && s.nfc_number.toLowerCase().includes(term))
         );
+    }
+
+    if (classType !== 'all') {
+        filtered = filtered.filter(s => {
+            const type = s.class_type || 'Physical';
+            return type === classType;
+        });
     }
 
     if (status === 'enrolled') {
@@ -256,6 +268,12 @@ document.getElementById('studentSearchInput').addEventListener('input', filterSe
 const statusFilter = document.getElementById('statusFilter');
 if (statusFilter) {
     statusFilter.addEventListener('change', filterSearch);
+}
+
+// Class type filter functionality
+const classTypeFilter = document.getElementById('classTypeFilter');
+if (classTypeFilter) {
+    classTypeFilter.addEventListener('change', filterSearch);
 }
 
 function renderEnrolledList() {
@@ -277,11 +295,15 @@ function renderEnrolledList() {
         const record = enrollmentRecords.find(r => r.student_id === s.id);
         const div = document.createElement('div');
         div.className = 'student-item';
+        
+        let typeColor = s.class_type === 'Online' ? '#3b82f6' : (s.class_type === 'Both' ? '#8b5cf6' : '#10b981');
+        let classTypeHtml = s.class_type ? `<span style="background: ${typeColor}20; color: ${typeColor}; padding: 1px 4px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-left: 6px; vertical-align: middle;">${s.class_type.toUpperCase()}</span>` : '';
+        
         div.innerHTML = `
             <div class="student-info">
                 <div class="student-img" style="background-image: url('${s.student_photo || './assets/img/student-blank-image.jpg'}'), url('./assets/img/student-blank-image.jpg');"></div>
                 <div class="student-details">
-                    <strong>${s.student_name}</strong>
+                    <strong>${s.student_name} ${classTypeHtml}</strong>
                     <small>${s.student_id || ''}</small>
                 </div>
             </div>
@@ -407,6 +429,8 @@ function viewAllStudents(e) {
     if (searchInput) searchInput.value = '';
     const statusFilter = document.getElementById('statusFilter');
     if (statusFilter) statusFilter.value = 'all';
+    const classTypeFilter = document.getElementById('classTypeFilter');
+    if (classTypeFilter) classTypeFilter.value = 'all';
     filterSearch();
 }
 

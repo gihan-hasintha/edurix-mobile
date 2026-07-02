@@ -351,7 +351,9 @@ async function handleNfcScan(nfcCardNumber) {
 function displayPaymentView(student, classInfo) {
     const photo = student.student_photo || './assets/img/depositphotos_679927214-stock-illustration-default-avatar-profile-placeholder-abstract.jpg';
     document.getElementById('studentPhoto').style.backgroundImage = `url('${photo}')`;
-    document.getElementById('studentName').textContent = student.student_name || 'Unknown Name';
+    let typeColor = student.class_type === 'Online' ? '#3b82f6' : (student.class_type === 'Both' ? '#8b5cf6' : '#10b981');
+    let classTypeHtml = student.class_type ? `<span style="background: ${typeColor}20; color: ${typeColor}; padding: 1px 4px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-left: 6px; vertical-align: middle;">${student.class_type.toUpperCase()}</span>` : '';
+    document.getElementById('studentName').innerHTML = (student.student_name || 'Unknown Name') + classTypeHtml;
     document.getElementById('studentIdCode').textContent = student.student_id || 'N/A';
     
     document.getElementById('classNameBadge').textContent = classInfo.name || 'N/A';
